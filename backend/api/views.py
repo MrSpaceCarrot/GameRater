@@ -19,12 +19,16 @@ def games(request):
 def add_game(request):
     # Handle setting the banner link
     platform = request.data.get("platform", None)
+    install_size = request.data.get("install_size", None)
     link = request.data.get("link", None)
     banner_link = request.data.get("banner_link", None)
 
     # Ensure platform is valid
     if platform not in ["Roblox", "Steam", "Party", "Other"]:
         return Response({"detail": "Invalid platform, games must be either Roblox, Steam, Party, or Other"},status=status.HTTP_400_BAD_REQUEST)
+    
+    if platform == "Steam" and not install_size:
+        return Response({"detail": "Steam games must include an install_size"},status=status.HTTP_400_BAD_REQUEST)
     
     # If game is Party or Other, banner_link is required
     if platform in ["Party", "Other"] and not banner_link:

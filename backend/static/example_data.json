@@ -19,14 +19,6 @@
         "last_updated": "2024-11-29 10:46:00"
     },
     {
-        "name": "Talking Points",
-        "platform": "Party",
-        "link": "https://jackbox.tv",
-        "min_party_size": 3,
-        "max_party_size": 8,
-        "tags": "Creative, Speaking"
-    },
-    {
         "name": "Overwatch 2",
         "platform": "Steam",
         "install_size": 50,
@@ -35,5 +27,58 @@
         "max_party_size": 16,
         "tags": "Co-op, Intense, PVP, Shooter, Teamwork",
         "last_updated": "2024-11-29 14:13:00"
+    },
+    {
+        "name": "Randomizer",
+        "platform": "Roblox",
+        "link": "https://www.roblox.com/games/5307215810/Randomizer-UPDATE",
+        "min_party_size": 2,
+        "max_party_size": 16,
+        "tags": "Intense, PVP, Rage-inducing, Shooter",
+        "last_updated": "2024-11-30 11:05:00"
+    },
+    {
+        "name": "Flee the Facility",
+        "platform": "Roblox",
+        "link": "https://www.roblox.com/games/893973440/Flee-the-Facility",
+        "min_party_size": 2,
+        "max_party_size": 5,
+        "tags": "Horror, Intense, PVP, Rage-inducing, Teamwork",
+        "last_updated": "2024-11-30 11:09:00"
+    },
+    {
+        "name": "Egoist Football",
+        "platform": "Roblox",
+        "link": "https://www.roblox.com/games/10742364019/BETA-EGOIST-Football",
+        "min_party_size": 2,
+        "max_party_size": 8,
+        "tags": "Intense, Rage-inducing, Sports, Teamwork",
+        "last_updated": "2024-11-30 11:18:00"
+    },
+    {
+        "name": "Talking Points",
+        "platform": "Party",
+        "link": "https://jackbox.tv",
+        "banner_link": "https://cms-assets.jackboxgames.com/talking_points_tile_a6667b5cc8.png?format=auto&width=500",
+        "min_party_size": 3,
+        "max_party_size": 8,
+        "tags": "Creative, Speaking"
+    },
+    {
+        "name": "Where's the baby!",
+        "platform": "Roblox",
+        "link": "https://www.roblox.com/games/381674682/Wheres-the-Baby",
+        "min_party_size": 2,
+        "max_party_size": 16,
+        "tags": "Mess-around, Rage-inducing, Role-playing"
+    },
+    {
+        "name": "Minecraft",
+        "platform": "Other",
+        "link": "https://www.xbox.com/en-NZ/games/store/minecraft-launcher/9pgw18npbzv5?ocid=storeforweb",
+        "banner_link": "https://i.sstatic.net/dqVlX.png",
+        "min_party_size": 2,
+        "max_party_size": 16,
+        "tags": "Building, Casual, Creative, Sandbox, Survival"
     }
 ]
