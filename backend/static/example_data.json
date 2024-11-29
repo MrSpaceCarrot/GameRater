@@ -1,0 +1,39 @@
+[
+    {
+        "name": "Crab Game",
+        "platform": "Steam",
+        "install_size": 0,
+        "link": "https://store.steampowered.com/app/1782210/Crab_Game/",
+        "min_party_size": 2,
+        "max_party_size": 16,
+        "tags": "Parkour, PVP, Intense, Rage-inducing",
+        "last_updated": "2024-11-28 21:59:00"
+    },
+    {
+        "name": "Arsenal",
+        "platform": "Roblox",
+        "link": "https://www.roblox.com/games/286090429/Arsenal",
+        "min_party_size": 2,
+        "max_party_size": 16,
+        "tags": "Intense, PVP, Rage-inducing, Shooter",
+        "last_updated": "2024-11-29 10:46:00"
+    },
+    {
+        "name": "Talking Points",
+        "platform": "Party",
+        "link": "https://jackbox.tv",
+        "min_party_size": 3,
+        "max_party_size": 8,
+        "tags": "Creative, Speaking"
+    },
+    {
+        "name": "Overwatch 2",
+        "platform": "Steam",
+        "install_size": 50,
+        "link": "https://store.steampowered.com/app/2357570/Overwatch_2/",
+        "min_party_size": 2,
+        "max_party_size": 16,
+        "tags": "Co-op, Intense, PVP, Shooter, Teamwork",
+        "last_updated": "2024-11-29 14:13:00"
+    }
+]
