@@ -1,25 +1,11 @@
 <script>
-  import navbar from './components/navbar.vue';
-  import all from './components/all.vue';
-
   export default {
     name: 'App',
-    components: {
-      navbar,
-      all,
-    },
-
-    data() {
-      return {
-        
-      };
-    }
   }
 </script>
 
 <template>
-  <navbar />
-  <all />
+  <router-view/>
 </template>
 
 <style>

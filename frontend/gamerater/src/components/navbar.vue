@@ -1,13 +1,19 @@
+<script>
+  export default {
+    name: 'NavBar',
+  }
+</script>
+
 <template>
 <nav class="navbar navbar-expand-lg p-0">
     <div class="container-fluid bg-dark navbar-dark d-flex align-items-center">
         <div class="d-flex align-items-center flex-grow-1">
 
-            <a class="navbar-brand" href="">
+            <router-link to="/" class="navbar-brand" href="">
                 <img src="/favicon.ico" alt="Site Logo" class="sitelogo">
-            </a>
+            </router-link>
 
-            <a class="text-light navbar-brand" href="all"><h2>Derps Inc Gaming</h2></a>
+            <router-link to="/" class="text-light navbar-brand" href="all"><h2>Derps Inc Gaming</h2></router-link>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -16,10 +22,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav d-flex align-items-center">
                     <li class="nav-item px-3">
-                        <a class="nav-link nooverflow" href="">All Games</a>
+                        <router-link to="/all" class="nav-link nooverflow" href="">All Games</router-link>
                     </li>
                     <li class="nav-item px-3">
-                        <a class="nav-link nooverflow" href="">Add Game</a>
+                        <router-link to="/add" class="nav-link nooverflow" href="">Add Game</router-link>
                     </li>
                     <li class="nav-item px-3">
                         <a class="nav-link nooverflow" href="">Top Rated</a>

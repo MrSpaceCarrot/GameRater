@@ -1,6 +1,8 @@
 <script>
   import axios from 'axios';
 
+  import NavBar from '../components/NavBar.vue'
+
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
@@ -10,8 +12,9 @@
   library.add(faSteam, faPencil, faGamepad);
 
   export default {
-    name: 'all',
+    name: 'All',
     components: {
+      NavBar,
       FontAwesomeIcon
     },
     data() {
@@ -41,6 +44,8 @@
 </script>
 
 <template>
+
+  <NavBar />
 
   <div class="container-fluid">
     <h2 class="text-light py-2">All Games</h2>
