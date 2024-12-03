@@ -138,3 +138,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS
 CORS_ORIGIN_WHITELIST_IMPORT = config("CORS_ORIGIN_WHITELIST")
 CORS_ORIGIN_WHITELIST = tuple(CORS_ORIGIN_WHITELIST_IMPORT.split(","))
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "OPTIONS",  # Ensure OPTIONS requests are allowed
+]
+
+# Authentication
+AUTHENTICATION_BACKENDS = [
+    'api.auth.DiscordAuthBackend'
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'api.auth.DiscordTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+}

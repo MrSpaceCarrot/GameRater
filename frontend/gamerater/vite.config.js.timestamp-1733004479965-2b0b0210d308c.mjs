@@ -1,0 +1,24 @@
+// vite.config.js
+import { fileURLToPath, URL } from "node:url";
+import { defineConfig } from "file:///D:/_Stuff%20And%20Junk/Github/GameRater/frontend/gamerater/node_modules/vite/dist/node/index.js";
+import vue from "file:///D:/_Stuff%20And%20Junk/Github/GameRater/frontend/gamerater/node_modules/@vitejs/plugin-vue/dist/index.mjs";
+import vueDevTools from "file:///D:/_Stuff%20And%20Junk/Github/GameRater/frontend/gamerater/node_modules/vite-plugin-vue-devtools/dist/vite.mjs";
+var __vite_injected_original_import_meta_url = "file:///D:/_Stuff%20And%20Junk/Github/GameRater/frontend/gamerater/vite.config.js";
+var vite_config_default = defineConfig({
+  plugins: [
+    vue()
+    //vueDevTools(),
+  ],
+  server: {
+    port: 4e3
+  },
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", __vite_injected_original_import_meta_url))
+    }
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcuanMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCJEOlxcXFxfU3R1ZmYgQW5kIEp1bmtcXFxcR2l0aHViXFxcXEdhbWVSYXRlclxcXFxmcm9udGVuZFxcXFxnYW1lcmF0ZXJcIjtjb25zdCBfX3ZpdGVfaW5qZWN0ZWRfb3JpZ2luYWxfZmlsZW5hbWUgPSBcIkQ6XFxcXF9TdHVmZiBBbmQgSnVua1xcXFxHaXRodWJcXFxcR2FtZVJhdGVyXFxcXGZyb250ZW5kXFxcXGdhbWVyYXRlclxcXFx2aXRlLmNvbmZpZy5qc1wiO2NvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9pbXBvcnRfbWV0YV91cmwgPSBcImZpbGU6Ly8vRDovX1N0dWZmJTIwQW5kJTIwSnVuay9HaXRodWIvR2FtZVJhdGVyL2Zyb250ZW5kL2dhbWVyYXRlci92aXRlLmNvbmZpZy5qc1wiO2ltcG9ydCB7IGZpbGVVUkxUb1BhdGgsIFVSTCB9IGZyb20gJ25vZGU6dXJsJ1xuXG5pbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tICd2aXRlJ1xuaW1wb3J0IHZ1ZSBmcm9tICdAdml0ZWpzL3BsdWdpbi12dWUnXG5pbXBvcnQgdnVlRGV2VG9vbHMgZnJvbSAndml0ZS1wbHVnaW4tdnVlLWRldnRvb2xzJ1xuXG4vLyBodHRwczovL3ZpdGUuZGV2L2NvbmZpZy9cbmV4cG9ydCBkZWZhdWx0IGRlZmluZUNvbmZpZyh7XG4gIHBsdWdpbnM6IFtcbiAgICB2dWUoKSxcbiAgICAvL3Z1ZURldlRvb2xzKCksXG4gIF0sXG4gIHNlcnZlcjoge1xuICAgIHBvcnQ6IDQwMDAsXG4gIH0sXG4gIHJlc29sdmU6IHtcbiAgICBhbGlhczoge1xuICAgICAgJ0AnOiBmaWxlVVJMVG9QYXRoKG5ldyBVUkwoJy4vc3JjJywgaW1wb3J0Lm1ldGEudXJsKSlcbiAgICB9LFxuICB9LFxufSlcbiJdLAogICJtYXBwaW5ncyI6ICI7QUFBb1csU0FBUyxlQUFlLFdBQVc7QUFFdlksU0FBUyxvQkFBb0I7QUFDN0IsT0FBTyxTQUFTO0FBQ2hCLE9BQU8saUJBQWlCO0FBSnVNLElBQU0sMkNBQTJDO0FBT2hSLElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLFNBQVM7QUFBQSxJQUNQLElBQUk7QUFBQTtBQUFBLEVBRU47QUFBQSxFQUNBLFFBQVE7QUFBQSxJQUNOLE1BQU07QUFBQSxFQUNSO0FBQUEsRUFDQSxTQUFTO0FBQUEsSUFDUCxPQUFPO0FBQUEsTUFDTCxLQUFLLGNBQWMsSUFBSSxJQUFJLFNBQVMsd0NBQWUsQ0FBQztBQUFBLElBQ3REO0FBQUEsRUFDRjtBQUNGLENBQUM7IiwKICAibmFtZXMiOiBbXQp9Cg==

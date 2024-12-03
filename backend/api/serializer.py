@@ -11,4 +11,4 @@ class GameSerializer(serializers.ModelSerializer):
     link = serializers.CharField(required=True)
     min_party_size = serializers.IntegerField(required=True)
     max_party_size = serializers.IntegerField(required=True)
-    tags = serializers.CharField(required=True)
+    tags = serializers.JSONField(required=True)

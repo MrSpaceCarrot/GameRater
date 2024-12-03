@@ -28,10 +28,10 @@
                         <router-link to="/add" class="nav-link nooverflow" href="">Add Game</router-link>
                     </li>
                     <li class="nav-item px-3">
-                        <a class="nav-link nooverflow" href="">Top Rated</a>
+                        <router-link to="/top" class="nav-link nooverflow" href="">Top Rated</router-link>
                     </li>
                     <li class="nav-item px-3">
-                        <a class="nav-link nooverflow" href="">Your Ratings</a>
+                        <router-link to="/rate" class="nav-link nooverflow" href="">Your Ratings</router-link>
                     </li>
                 </ul>
 
@@ -44,12 +44,12 @@
         <ul class="navbar-nav d-flex align-items-center">
             <li class="nav-item">
                 <div class="d-flex align-items-center">
-                    <a class="nav-link text-light" href="">
+                    <router-link to="/profile" class="nav-link text-light" href="">
                         <img src="https://cdn.discordapp.com/avatars/725251028999602239/432cbf5d267767e56bb79bdb0a727bf2?size=1024" class="usericon rounded-circle" alt="User Avatar">
-                    </a>
-                    <a class="nav-link text-light logoutbutton ms-2" href="">
+                    </router-link>
+                    <router-link to="/logout" class="nav-link text-light logoutbutton ms-2" href="">
                         <img src="/logout.svg" class="inline-svg">
-                    </a>
+                    </router-link>
                 </div>
             </li>
         </ul>

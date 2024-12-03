@@ -1,11 +1,25 @@
 <script>
+  import axios from 'axios';
+
   import NavBar from '../components/NavBar.vue'
 
   export default {
     name: 'Home',
     components: {
       NavBar
-    }
+    },
+    mounted() {
+      // Api Url
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+      // Check if user is logged in
+      const token = localStorage.getItem('token');
+      if(!token) {
+        this.$router.push({name: 'Login', params: { message: 'missingtoken'} });
+      }
+      axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
+      .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
+    },
   }
 </script>
 

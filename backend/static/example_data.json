@@ -6,8 +6,7 @@
         "link": "https://store.steampowered.com/app/1782210/Crab_Game/",
         "min_party_size": 2,
         "max_party_size": 16,
-        "tags": "Parkour, PVP, Intense, Rage-inducing",
-        "last_updated": "2024-11-28 21:59:00"
+        "tags": ["Parkour", "PVP", "Intense", "Rage-inducing"]
     },
     {
         "name": "Arsenal",
@@ -15,8 +14,7 @@
         "link": "https://www.roblox.com/games/286090429/Arsenal",
         "min_party_size": 2,
         "max_party_size": 16,
-        "tags": "Intense, PVP, Rage-inducing, Shooter",
-        "last_updated": "2024-11-29 10:46:00"
+        "tags": ["Intense", "PVP", "Rage-inducing", "Shooter"]
     },
     {
         "name": "Overwatch 2",
@@ -25,8 +23,7 @@
         "link": "https://store.steampowered.com/app/2357570/Overwatch_2/",
         "min_party_size": 2,
         "max_party_size": 16,
-        "tags": "Co-op, Intense, PVP, Shooter, Teamwork",
-        "last_updated": "2024-11-29 14:13:00"
+        "tags": ["Co-op", "Intense", "PVP", "Shooter", "Teamwork"]
     },
     {
         "name": "Randomizer",
@@ -34,8 +31,7 @@
         "link": "https://www.roblox.com/games/5307215810/Randomizer-UPDATE",
         "min_party_size": 2,
         "max_party_size": 16,
-        "tags": "Intense, PVP, Rage-inducing, Shooter",
-        "last_updated": "2024-11-30 11:05:00"
+        "tags": ["Intense", "PVP", "Rage-inducing", "Shooter"]
     },
     {
         "name": "Flee the Facility",
@@ -43,8 +39,7 @@
         "link": "https://www.roblox.com/games/893973440/Flee-the-Facility",
         "min_party_size": 2,
         "max_party_size": 5,
-        "tags": "Horror, Intense, PVP, Rage-inducing, Teamwork",
-        "last_updated": "2024-11-30 11:09:00"
+        "tags": ["Horror", "Intense", "Rage-inducing", "Teamwork"]
     },
     {
         "name": "Egoist Football",
@@ -52,8 +47,7 @@
         "link": "https://www.roblox.com/games/10742364019/BETA-EGOIST-Football",
         "min_party_size": 2,
         "max_party_size": 8,
-        "tags": "Intense, Rage-inducing, Sports, Teamwork",
-        "last_updated": "2024-11-30 11:18:00"
+        "tags": ["Intense", "Rage-inducing", "Sports", "Teamwork"]
     },
     {
         "name": "Talking Points",
@@ -62,7 +56,7 @@
         "banner_link": "https://cms-assets.jackboxgames.com/talking_points_tile_a6667b5cc8.png?format=auto&width=500",
         "min_party_size": 3,
         "max_party_size": 8,
-        "tags": "Creative, Speaking"
+        "tags": ["Creative", "Speaking"]
     },
     {
         "name": "Where's the baby!",
@@ -70,7 +64,7 @@
         "link": "https://www.roblox.com/games/381674682/Wheres-the-Baby",
         "min_party_size": 2,
         "max_party_size": 16,
-        "tags": "Mess-around, Rage-inducing, Role-playing"
+        "tags": ["Mess-around", "Rage-inducing", "Role-playing"]
     },
     {
         "name": "Minecraft",
@@ -79,6 +73,23 @@
         "banner_link": "https://i.sstatic.net/dqVlX.png",
         "min_party_size": 2,
         "max_party_size": 16,
-        "tags": "Building, Casual, Creative, Sandbox, Survival"
+        "tags": ["Building", "Casual", "Creative", "Sandbox", "Survival"]
+    },
+    {
+        "name": "Murder Mystery 2",
+        "platform": "Roblox",
+        "link": "https://www.roblox.com/games/142823291/Murder-Mystery-2",
+        "min_party_size": 3,
+        "max_party_size": 16,
+        "tags": ["Role-playing", "Social-deduction"]
+    },
+    {
+        "name": "Grapples Galore",
+        "platform": "Steam",
+        "install_size": 0,
+        "link": "https://store.steampowered.com/app/2239140/Grapples_Galore/",
+        "min_party_size": 2,
+        "max_party_size": 16,
+        "tags": ["Action", "Battlegrounds", "Fighting", "PVP"]
     }
 ]

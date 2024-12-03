@@ -13,9 +13,35 @@ class Game(models.Model):
     banner_link = models.CharField(max_length=300, default=None)
     min_party_size = models.SmallIntegerField(default=None)
     max_party_size = models.SmallIntegerField(default=None)
-    tags = models.CharField(max_length=300, default=None)
+    tags = models.JSONField(default=None)
     last_updated = models.DateTimeField("Last Updated", default=None, null=True)
     date_added = models.DateTimeField("Date added", default=timezone.now)
 
     def __str__(self):
         return self.name
+    
+# Discord User Model
+class DiscordUser(models.Model):
+    id = models.AutoField(primary_key=True)
+    discord_id = models.CharField(max_length=100, default=None)
+    username = models.CharField(max_length=100)
+    avatar_link = models.CharField(max_length=100, default=None)
+    first_login = models.DateTimeField("First Login", default=timezone.now)
+    last_login = models.DateTimeField(default=None, null=True)
+    display_name = models.CharField(max_length=100, default=None)
+    display_name_last_changed = models.DateTimeField(default=None, null=True)
+
+    def is_authenticated(self, request):
+        return True
+    
+    def __str__(self):
+        return self.username
+
+# Auth Token Model
+class AuthToken(models.Model):
+    user = models.OneToOneField('DiscordUser', on_delete=models.CASCADE)
+    token = models.CharField(max_length=255, unique=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.token

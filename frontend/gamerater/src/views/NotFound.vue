@@ -4,7 +4,7 @@
   import NavBar from '../components/NavBar.vue'
 
   export default {
-    name: 'PAGENAME',
+    name: 'NotFound',
     components: {
       NavBar
     },
@@ -24,8 +24,8 @@
 </script>
 
 <template>
-  <NavBar />
-  <div class="container-fluid">
-    <h2 class="text-light py-2">PAGE NAME</h2>
+    <NavBar />
+    <div class="container-fluid">
+    <h2 class="text-light py-2">404 Page Not Found</h2>
   </div>
 </template>

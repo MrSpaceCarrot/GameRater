@@ -1,13 +1,8 @@
 <script>
   import axios from 'axios';
 
-  import NavBar from '../components/NavBar.vue'
-
   export default {
-    name: 'PAGENAME',
-    components: {
-      NavBar
-    },
+    name: 'Logout',
     mounted() {
       // Api Url
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -19,13 +14,20 @@
       }
       axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
       .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
+
+      this.logout()
+    },
+    methods: {
+      logout() {
+        localStorage.removeItem('token');
+        this.$router.push({name: 'Login', params: { message: 'logout'} });
+      }
     }
   }
 </script>
 
 <template>
-  <NavBar />
-  <div class="container-fluid">
-    <h2 class="text-light py-2">PAGE NAME</h2>
+  <div>
+    <p v-if="loading">Logging out...</p>
   </div>
 </template>

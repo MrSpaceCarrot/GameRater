@@ -23,23 +23,30 @@
       };
     },
     mounted() {
-      const apiUrl = `${import.meta.env.VITE_API_URL}/games/`;
+      // Api Url
+      const apiUrl = import.meta.env.VITE_API_URL;
 
-      axios.get(apiUrl)
-      .then((response) => {
-          this.apiData = response.data;
-      })
-      .catch((error) => {
-          console.error('Error fetching data:', error);
-      });
+      // Check if user is logged in
+      const token = localStorage.getItem('token');
+      if(!token) {
+        this.$router.push({name: 'Login', params: { message: 'missingtoken'} });
+      }
+      axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
+      .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
+
+      // Get all games
+      axios.get(apiUrl + "/games/", {headers: {Authorization: `Token ${token}`}})
+      .then((response) => {this.apiData = response.data;})
+      .catch((error) => {console.error('Error fetching data:', error);});
     },
     computed: {
+      // Sort games alphabetically
       sortedApiData() {
         if(this.apiData) {
           return this.apiData.slice().sort((a, b) => a.name.localeCompare(b.name));
         };
       }
-    }
+    },
   };
 </script>
 
