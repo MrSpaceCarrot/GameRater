@@ -29,4 +29,9 @@ const router = createRouter({
   routes,
 })
 
+//router.beforeEach((to, from, next) => {
+//  document.title = to.name + " | Derps Inc Gaming";
+//  next();
+//});
+
 export default router

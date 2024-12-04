@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Game
+from .models import Game, Tag
 
 class GameSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,3 +12,10 @@ class GameSerializer(serializers.ModelSerializer):
     min_party_size = serializers.IntegerField(required=True)
     max_party_size = serializers.IntegerField(required=True)
     tags = serializers.JSONField(required=True)
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+    tag = serializers.CharField(required=True)

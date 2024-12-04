@@ -43,7 +43,8 @@ export default {
 </script>
 
 <template>
-  <div>
-    <p v-if="loading">Logging in...</p>
+  <div class="d-inline-flex m-3" v-if="loading">
+    <div class="spinner-border text-light"></div>
+    <p class="px-2">Logging in...</p>
   </div>
 </template>

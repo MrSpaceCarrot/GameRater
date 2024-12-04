@@ -20,6 +20,14 @@ class Game(models.Model):
     def __str__(self):
         return self.name
     
+# Game tag model
+class Tag(models.Model):
+    id =models.AutoField(primary_key=True, unique=True)
+    tag = models.CharField(max_length=50, default=None)
+
+    def __str__(self):
+        return self.tag
+    
 # Discord User Model
 class DiscordUser(models.Model):
     id = models.AutoField(primary_key=True)

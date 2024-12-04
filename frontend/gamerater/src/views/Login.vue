@@ -15,10 +15,6 @@
         message: this.$route.params.message
       }
     },
-    mounted() {
-      // Api Url
-      //const apiUrl = import.meta.env.VITE_API_URL;
-    },
     methods: {
       loginWithDiscord() {
         const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
@@ -43,7 +39,7 @@
         <ul class="nav nav-pills flex-column">
             <li class="nav-item">
                 <div class="d-inline-block">
-                    <a class="nav-link text-light discordloginbutton" @click="loginWithDiscord">Login with Discord <font-awesome-icon icon="fa-brands fa-discord"/></a>
+                    <button @click="loginWithDiscord" class="btn btn-primary text-light discordloginbutton">Login with Discord <font-awesome-icon icon="fa-brands fa-discord"/></button>
                 </div>
             </li>
         </ul>

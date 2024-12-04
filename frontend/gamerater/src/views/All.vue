@@ -38,15 +38,7 @@
       axios.get(apiUrl + "/games/", {headers: {Authorization: `Token ${token}`}})
       .then((response) => {this.apiData = response.data;})
       .catch((error) => {console.error('Error fetching data:', error);});
-    },
-    computed: {
-      // Sort games alphabetically
-      sortedApiData() {
-        if(this.apiData) {
-          return this.apiData.slice().sort((a, b) => a.name.localeCompare(b.name));
-        };
-      }
-    },
+    }
   };
 </script>
 
@@ -58,7 +50,7 @@
     <h2 class="text-light py-2">All Games</h2>
 
     <div v-if="apiData" class="row justify-content-start">
-      <div v-for="game in sortedApiData" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 py-2">
+      <div v-for="game in apiData" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 py-2">
           <div class="imgcontainer rounded">
             <a :href="game.link">
                 <img :src="game.banner_link" :alt="`${game.name} banner image`" class="img-fluid hoverfade fixedsize">

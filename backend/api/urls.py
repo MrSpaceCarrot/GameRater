@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import games, add_game, game, discord_callback, verifytoken
+from .views import games, add_game, game, discord_callback, verifytoken, tags
 
 urlpatterns = [
     # Auth
@@ -10,4 +10,5 @@ urlpatterns = [
     path('games/', games, name='get_games'),
     path('games/add', add_game, name='add_game'),
     path('games/<int:pk>', game, name='game'),
+    path('tags/', tags, name='tags'),
 ]

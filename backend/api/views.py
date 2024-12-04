@@ -2,8 +2,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Game
-from .serializer import GameSerializer
+from .models import Game, Tag
+from .serializer import GameSerializer, TagSerializer
 from .services import GameService
 from .auth import DiscordAuthBackend, DiscordTokenAuthentication
 
@@ -15,8 +15,17 @@ from .auth import DiscordAuthBackend, DiscordTokenAuthentication
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def games(request):
-    games = Game.objects.all()
+    games = Game.objects.all().order_by('name')
     serializer = GameSerializer(games, many=True)
+    return Response(serializer.data)
+
+# Get game tags list
+@api_view(["GET"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def tags(request):
+    tags = Tag.objects.all().order_by('tag')
+    serializer = TagSerializer(tags, many=True)
     return Response(serializer.data)
 
 # Add game
@@ -32,8 +41,8 @@ def add_game(request):
     if platform not in ["Roblox", "Steam", "Party", "Other"]:
         return Response({"detail": "Invalid platform, games must be either Roblox, Steam, Party, or Other"},status=status.HTTP_400_BAD_REQUEST)
     
-    if platform == "Steam" and not type(install_size) == int:
-        return Response({"detail": "Steam games must include an install_size"},status=status.HTTP_400_BAD_REQUEST)
+    #if platform == "Steam" and not type(install_size) == int:
+    #    return Response({"detail": "Steam games must include an install_size"},status=status.HTTP_400_BAD_REQUEST)
     
     # If game is Party or Other, banner_link is required
     if platform in ["Party", "Other"] and not banner_link:
