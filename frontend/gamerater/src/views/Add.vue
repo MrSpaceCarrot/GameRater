@@ -35,10 +35,12 @@
         gamebannerlink: '',
         platform: "Roblox",
         linkformat: "https://www.roblox.com/games/xxxxxxxxx",
+        submissionloading: false,
 
-        // Form errors
+        // Form messages
         submissionmessage: '',
         submissionmessagetype: '',
+        submissionresponse: '',
 
         // Slider
         sliderValues: [2, 16],
@@ -91,6 +93,9 @@
 
       // Change tab contents when clicked
       updatePlatform(selectedPlatform) {
+        if(selectedPlatform != this.platform) {
+          this.clearForm()
+        }
         this.platform = selectedPlatform
 
         switch (this.platform) {
@@ -110,6 +115,15 @@
 
         this.submissionmessage = '',
         this.submissionmessagetype = ''
+      },
+
+      // Clear all fields
+      clearForm() {
+        this.gamename = ''
+        this.gamelink = ''
+        this.gamebannerlink = ''
+        this.sliderValues = [2, 16]
+        this.tagify.removeAllTags()
       },
 
       // Submit game form
@@ -137,15 +151,24 @@
         if(data["link"] == ''){ this.submissionmessage = "Link is required"; this.submissionmessagetype = "Error"; return}
         if(data["banner_link"] == '' && data["platform"] == "Party" || data["platform"] == "Other"){ this.submissionmessage = "Banner link is required for " + this.platform + " games"; this.submissionmessagetype = "Error"; return}
         if(data["min_party_size"] < 2 || data["max_party_size"] > 16){ this.submissionmessage = "Invalid party size"; this.submissionmessagetype = "Error"; return}
-        if(data["tags"].length < 2 || data["tags"] > 5){ this.submissionmessage = "Invalid number of tags"; this.submissionmessagetype = "Error"; return}
+        if(data["tags"].length < 2 || data["tags"] > 5){ this.submissionmessage = "Please choose between 2 and 5 tags"; this.submissionmessagetype = "Error"; return}
+
+        this.submissionloading = true;
 
         //Send request
         axios.post(this.apiUrl + "/games/add", data, {headers: {Authorization: `Token ${this.token}`}})
         .then((response) => {
-          this.submissionmessage = response.data["name"] + " successfully added";
+          this.submissionresponse = response;
+          this.submissionmessage = "Successfully added game: " + response.data["name"];
           this.submissionmessagetype = "Success";
+          this.submissionloading = false;
         })
-        .catch((error) => {console.log(error)});
+        .catch((error) => {
+          this.submissionmessage = error["response"]["data"]["detail"];
+          this.submissionmessagetype = "Error";
+          this.submissionloading = false; 
+        });
+        
       } 
     },
   }
@@ -183,10 +206,10 @@
         <!-- /Platform selection-->
 
         <!-- Submission message-->
-        <div v-if="submissionmessage && submissionmessagetype==='Error'" class="submissionmessageerror py-2 my-3 bg-danger text-center rounded">
+        <div v-if="submissionmessage && submissionmessagetype==='Error'" class="py-2 my-3 bg-danger text-center rounded">
           <h6>{{ submissionmessage }}</h6>
         </div>
-        <div v-if="submissionmessage && submissionmessagetype==='Success'" class="submissionmessageerror py-2 my-3 bg-success text-center rounded">
+        <div v-if="submissionmessage && submissionmessagetype==='Success'" class="py-2 my-3 bg-success text-center rounded">
           <h6>{{ submissionmessage }}</h6>
         </div>
         <!-- /Submission message -->
@@ -239,7 +262,10 @@
         <!-- /Game Tags-->
         <!-- /Entry fields-->
         
-        <button type="submit" class="btn btn-primary">Add Game</button>
+        <button type="submit" class="btn btn-primary">
+          Add Game
+          <span v-if="submissionloading===true" class="spinner-border spinner-border-sm"></span>
+        </button>
     </form> 
   </div>
 </template>
@@ -275,84 +301,92 @@
 }
 
 .inline-svg {
-    width: 1.1em;
-    height: 1.1em;
-    vertical-align: middle;
-    margin-top: -3px;
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: middle;
+  margin-top: -3px;
 }
 
 input.formquery, input.formquery[type=text] {
-    background-color: #505560 !important;
-    color: white;
-    border: none;
-    box-shadow: none !important;
-    outline: none !important;
+  background-color: #505560 !important;
+  color: white;
+  border: none;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .formcomments {
-    color: #bebebe !important;
+  color: #bebebe !important;
 }
 
 .vue-slider-mark-label {
-    color: #fff;
+  color: #fff;
+}
+
+h6 {
+  margin-bottom: 0px;
+}
+
+.submittedgameimage {
+  max-height: 200px;
 }
 
 /* Tagify */
 
 .tagify {
-    width: 100%;
-    padding: 0rem 0.1rem;
-    font-size: 1rem; 
-    line-height: 1.5;
-    height: calc(2.25rem); 
-    display: flex;
-    align-items: center;
+  width: 100%;
+  padding: 0rem 0.1rem;
+  font-size: 1rem; 
+  line-height: 1.5;
+  height: calc(2.25rem); 
+  display: flex;
+  align-items: center;
 }
 
 .tagify__input, .tagify {
-    background-color: #505560 !important;
-    color: white !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
+  background-color: #505560 !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .tagify__input {
-    display: inline-block;
-    align-self: center;
-    vertical-align: middle;
-    margin: 0px !important;
+  display: inline-block;
+  align-self: center;
+  vertical-align: middle;
+  margin: 0px !important;
 }
 
 .tagify__tag {
-    display: inline-flex;
-    margin: 2px !important;
-    padding: 0px !important;
+  display: inline-flex;
+  margin: 2px !important;
+  padding: 0px !important;
 }
 
 .tagify__tag:hover {
-    text-decoration: none !important;
+  text-decoration: none !important;
 }
 
 .tagify__dropdown__item {
-    background-color: #505560 !important;
-    color: white;
+  background-color: #505560 !important;
+  color: white;
 }
 
 .tagify__dropdown__item--active {
-    background-color: #2f6ac3 !important;
+  background-color: #2f6ac3 !important;
 }
 
 .tagify__dropdown__wrapper, .tagify__dropdown, .tagify__dropdown__footer{
-    color: white;
-    background-color: #484b52 !important;
+  color: white;
+  background-color: #484b52 !important;
 }
 
 .tagifyinput, .tagifyinput .tagify__tag {
-    --tag-bg: #E5E5E5;
-    --tag-hover: #E5E5E5;
-    --tag-remove-bg: #E5E5E5;
-    --tag-inset-shadow-size: 1.3em;
+  --tag-bg: #E5E5E5;
+  --tag-hover: #E5E5E5;
+  --tag-remove-bg: #E5E5E5;
+  --tag-inset-shadow-size: 1.3em;
 }
 
 </style>

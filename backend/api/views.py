@@ -30,12 +30,24 @@ def tags(request):
 
 # Add game
 @api_view(["POST"])
+#@authentication_classes([DiscordTokenAuthentication])
+#@permission_classes([IsAuthenticated])
 def add_game(request):
     # Handle setting the banner link
+    name = request.data.get("name", None)
     platform = request.data.get("platform", None)
     install_size = request.data.get("install_size", None)
     link = request.data.get("link", None)
     banner_link = request.data.get("banner_link", None)
+    min_party_size = request.data.get("min_party_size", None)
+    max_party_size = request.data.get("max_party_size", None)
+    tags = request.data.get("tags", None)
+
+    # Duplicate games check
+    games = Game.objects.all().order_by('name')
+    for game in games:
+        if game.name == name or game.link == link:
+            return Response({"detail": "This game has already been added"},status=status.HTTP_400_BAD_REQUEST)
 
     # Ensure platform is valid
     if platform not in ["Roblox", "Steam", "Party", "Other"]:
@@ -56,18 +68,28 @@ def add_game(request):
         # Get banner link
         banner_link = game_service.get_banner_link(platform, link)
         if not banner_link:
-            return Response({"detail": "An error occured getting the banner link"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "An error occured getting the banner link. The game link may be invalid."}, status=status.HTTP_400_BAD_REQUEST)
 
     # If game is Roblox, last_updated needs to be retrived
     if platform == "Roblox":
         last_updated = game_service.get_last_updated(platform, link)
         if not last_updated:
-            return Response({"detail": "An error occured getting last updated"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "An error occured getting last updated. The game link may be invalid."}, status=status.HTTP_400_BAD_REQUEST)
     else:
         last_updated = None
 
+    # Check that party size is valid
+    if type(min_party_size) != int or type(max_party_size) != int or min_party_size < 2 or max_party_size > 16:
+        return Response({"detail": "Party size range must be between 2 and 16"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Alphabetically sort tags and check number
+    if type(tags) != list or len(tags) < 2 or len(tags) > 5:
+        return Response({"detail": "Please choose between 2 and 5 tags"}, status=status.HTTP_400_BAD_REQUEST)
+    tags = sorted(tags)
+
     request.data["banner_link"] = banner_link
     request.data["last_updated"] = last_updated
+    request.data["tags"] = tags
         
     # Serialize data
     serializer = GameSerializer(data=request.data)
