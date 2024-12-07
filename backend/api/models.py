@@ -17,6 +17,7 @@ class Game(models.Model):
     last_updated = models.DateTimeField("Last Updated", default=None, null=True)
     date_added = models.DateTimeField("Date added", default=timezone.now)
     added_by = models.ForeignKey("DiscordUser", on_delete=models.SET_NULL, related_name="gamesadded" ,default=None, null=True)
+    update_banner_link = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

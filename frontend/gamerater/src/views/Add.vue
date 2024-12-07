@@ -63,6 +63,10 @@
       this.setupTagify()
     },
     methods: {
+      capitalizeFirstLetter(value) {
+        return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+      },
+
       // Setup tagify
       setupTagify() {
         // Create tagify
@@ -145,11 +149,13 @@
           "tags": tags
         };
 
+        console.log(data)
+
         // Form checking
         if(data["name"] == ''){ this.submissionmessage = "Name is required"; this.submissionmessagetype = "Error"; return}
         if(data["platform"] == ''){ this.submissionmessage = "Platform is required"; this.submissionmessagetype = "Error"; return}
         if(data["link"] == ''){ this.submissionmessage = "Link is required"; this.submissionmessagetype = "Error"; return}
-        if(data["banner_link"] == '' && data["platform"] == "Party" || data["platform"] == "Other"){ this.submissionmessage = "Banner link is required for " + this.platform + " games"; this.submissionmessagetype = "Error"; return}
+        if(data["banner_link"] == '' && data["platform"] == "Party" || data["banner_link"] == '' && data["platform"] == "Other"){ this.submissionmessage = "Banner link is required for " + this.platform + " games"; this.submissionmessagetype = "Error"; return}
         if(data["min_party_size"] < 2 || data["max_party_size"] > 16){ this.submissionmessage = "Invalid party size"; this.submissionmessagetype = "Error"; return}
         if(data["tags"].length < 2 || data["tags"] > 5){ this.submissionmessage = "Please choose between 2 and 5 tags"; this.submissionmessagetype = "Error"; return}
 
@@ -162,9 +168,17 @@
           this.submissionmessage = "Successfully added game: " + response.data["name"];
           this.submissionmessagetype = "Success";
           this.submissionloading = false;
+          console.log(response)
         })
         .catch((error) => {
-          this.submissionmessage = error["response"]["data"]["detail"];
+          const data = error["response"]["data"]
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              const value = data[key][0];
+              this.submissionmessage = `${this.capitalizeFirstLetter(key)}: ${this.capitalizeFirstLetter(value)}`
+            }
+          }
+
           this.submissionmessagetype = "Error";
           this.submissionloading = false; 
         });

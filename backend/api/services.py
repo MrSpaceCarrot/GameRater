@@ -88,18 +88,22 @@ class GameService():
         games = Game.objects.all().order_by('name')
         print("")
         for game in games:
-            new_banner_link = self.get_banner_link(game.platform, game.link)
-            
-            time.sleep(1)
-            if new_banner_link:
-                if new_banner_link == game.banner_link:
-                    print(f"Keeing banner link for {game.name}")
-                else:
-                    print(f"Changing banner link for {game.name} from {game.banner_link} to {new_banner_link}")
-                    game.banner_link = new_banner_link
-                    game.save()
+            if game.update_banner_link ==False:
+                print(f"Keeing banner link for {game.name} due to exception")
+                continue
             else:
-                print(f"Keeing banner link for {game.name}")
+                new_banner_link = self.get_banner_link(game.platform, game.link)
+                
+                time.sleep(1)
+                if new_banner_link:
+                    if new_banner_link == game.banner_link:
+                        print(f"Keeing banner link for {game.name}")
+                    else:
+                        print(f"Changing banner link for {game.name} from {game.banner_link} to {new_banner_link}")
+                        game.banner_link = new_banner_link
+                        game.save()
+                else:
+                    print(f"Keeing banner link for {game.name}")
 
     # Update last updated for all games
     def update_last_updated(self):
