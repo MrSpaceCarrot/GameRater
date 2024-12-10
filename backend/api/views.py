@@ -2,20 +2,38 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Game, Tag
-from .serializer import GameSerializer, TagSerializer
+from .models import Game, Tag, AuthToken, DiscordUser
+from .serializer import GameSerializer, TagSerializer, DiscordUserSerializer
 from .services import GameService
 from .auth import DiscordAuthBackend, DiscordTokenAuthentication
 
 # Endpoints
 
 # Games
-# Get all games
+# Get all games (name)
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def games(request):
     games = Game.objects.all().order_by('name')
+    serializer = GameSerializer(games, many=True)
+    return Response(serializer.data)
+
+# Get 10 most recently added games
+@api_view(["GET"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def recentlyaddedgames(request):
+    games = Game.objects.all().order_by('-date_added')[:6]
+    serializer = GameSerializer(games, many=True)
+    return Response(serializer.data)
+
+# Get 10 most recently updated games
+@api_view(["GET"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def recentlyupdatedgames(request):
+    games = Game.objects.all().order_by('-last_updated')[:6]
     serializer = GameSerializer(games, many=True)
     return Response(serializer.data)
 
@@ -41,6 +59,8 @@ def add_game(request):
 
 # Specific game
 @api_view(["GET", "PATCH", "DELETE"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
 def game(request, pk):
     # Check that game exists
     try:
@@ -66,7 +86,7 @@ def game(request, pk):
         game.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# Authentication
+# Authentication & Users
 # Check if current token is valid
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
@@ -94,3 +114,18 @@ def discord_callback(request):
         },
         "token": token
     })
+
+# Get currently logged in user
+@api_view(["GET", "PATCH", "DELETE"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    # Get current user's token
+    token = request.headers.get('Authorization').split(' ')[1]
+    token_object = AuthToken.objects.get(token=token)
+    user_object = DiscordUser.objects.get(id=token_object.user_id)
+    
+    # Return object
+    serializer = DiscordUserSerializer(user_object)
+    return Response(serializer.data)
+

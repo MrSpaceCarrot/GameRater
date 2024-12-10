@@ -54,7 +54,9 @@ class GameSerializer(serializers.ModelSerializer):
         banner_link = data.get("banner_link")
 
         # Ensure game is unique
-        if Game.objects.filter(name=name).exists() or Game.objects.filter(link=link).exists():
+        if Game.objects.filter(name=name).exists():
+            raise serializers.ValidationError({"duplicate": "This game has already been added"})
+        if Game.objects.filter(link=link).exists() and platform != "Party":
             raise serializers.ValidationError({"duplicate": "This game has already been added"})
 
         # Ensure banner link is set
@@ -83,6 +85,12 @@ class GameSerializer(serializers.ModelSerializer):
             data["added_by"] = None
              
         return data
+    
+
+class DiscordUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiscordUser
+        fields = '__all__'
         
 
 class TagSerializer(serializers.ModelSerializer):

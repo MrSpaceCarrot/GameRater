@@ -19,7 +19,7 @@
     },
     data() {
       return {
-        apiData: null,
+        allGames: null,
       };
     },
     mounted() {
@@ -28,16 +28,20 @@
 
       // Check if user is logged in
       const token = localStorage.getItem('token');
-      if(!token) {
-        this.$router.push({name: 'Login', params: { message: 'missingtoken'} });
-      }
+      if(!token) {this.$router.push({name: 'Login', params: { message: 'missingtoken'} });}
       axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
       .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
 
       // Get all games
-      axios.get(apiUrl + "/games/", {headers: {Authorization: `Token ${token}`}})
-      .then((response) => {this.apiData = response.data;})
-      .catch((error) => {console.error('Error fetching data:', error);});
+      this.fetchFromAPI(`${apiUrl}/games/`, token).then((data) => {this.allGames = data})
+    },
+    methods: {
+      fetchFromAPI(url, token) {
+        return axios
+        .get(url, {headers: { Authorization: `Token ${token}` },})
+        .then((response) => response.data)
+        .catch((error) => {console.error("Error fetching data:", error); throw error;});
+      }
     }
   };
 </script>
@@ -49,10 +53,10 @@
   <div class="container-fluid">
     <h2 class="text-light py-2">All Games</h2>
 
-    <div v-if="apiData" class="row justify-content-start">
-      <div v-for="game in apiData" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 py-2">
+    <div v-if="allGames" class="row justify-content-start">
+      <div v-for="game in allGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 py-2">
           <div class="imgcontainer rounded">
-            <a :href="game.link">
+            <a :href="game.link" target="_blank">
                 <img :src="game.banner_link" :alt="`${game.name} banner image`" class="img-fluid hoverfade fixedsize">
             </a>
           </div>

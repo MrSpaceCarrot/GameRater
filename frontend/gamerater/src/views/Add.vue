@@ -149,8 +149,6 @@
           "tags": tags
         };
 
-        console.log(data)
-
         // Form checking
         if(data["name"] == ''){ this.submissionmessage = "Name is required"; this.submissionmessagetype = "Error"; return}
         if(data["platform"] == ''){ this.submissionmessage = "Platform is required"; this.submissionmessagetype = "Error"; return}
@@ -168,7 +166,6 @@
           this.submissionmessage = "Successfully added game: " + response.data["name"];
           this.submissionmessagetype = "Success";
           this.submissionloading = false;
-          console.log(response)
         })
         .catch((error) => {
           const data = error["response"]["data"]

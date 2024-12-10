@@ -1,6 +1,34 @@
 <script>
+  import axios from 'axios';
+
   export default {
     name: 'NavBar',
+    data() {
+      return {
+        currentUser: null,
+      }
+    },
+    mounted() {
+      // Api Url
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+      // Check if user is logged in
+      const token = localStorage.getItem('token');
+      if(!token) {this.$router.push({name: 'Login', params: { message: 'missingtoken'} });}
+      axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
+      .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
+
+      // Get current user
+      this.fetchFromAPI(`${apiUrl}/currentuser`, token).then((data) => {this.currentUser = data; console.log(data);})
+    },
+    methods: {
+      fetchFromAPI(url, token) {
+        return axios
+        .get(url, {headers: { Authorization: `Token ${token}` },})
+        .then((response) => response.data)
+        .catch((error) => {console.error("Error fetching data:", error); throw error;});
+      }
+    }
   }
 </script>
 
@@ -22,6 +50,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav d-flex align-items-center">
                     <li class="nav-item px-3">
+                        <router-link to="/" class="nav-link nooverflow" href="">Home</router-link>
+                    </li>
+                    <li class="nav-item px-3">
                         <router-link to="/all" class="nav-link nooverflow" href="">All Games</router-link>
                     </li>
                     <li class="nav-item px-3">
@@ -35,9 +66,13 @@
                     </li>
                 </ul>
 
+                <!--
+
                 <form class="d-flex input-group-sm mainsearchbar me-3">
                     <input class="form-control me-2 mainsearchbarquery" type="text" placeholder="Search">
                 </form>
+
+                -->
             </div>
         </div>
 
@@ -45,7 +80,8 @@
             <li class="nav-item">
                 <div class="d-flex align-items-center">
                     <router-link to="/profile" class="nav-link text-light" href="">
-                        <img src="https://cdn.discordapp.com/avatars/725251028999602239/432cbf5d267767e56bb79bdb0a727bf2?size=1024" class="usericon rounded-circle" alt="User Avatar">
+                        <img v-if="currentUser" :src="currentUser['avatar_link']" class="usericon rounded-circle" alt="User Avatar">
+                        <img v-else src="https://via.placeholder.com/1024" class="usericon rounded-circle" alt="User Avatar">
                     </router-link>
                     <router-link to="/logout" class="nav-link text-light logoutbutton ms-2" href="">
                         <img src="/logout.svg" class="inline-svg">
