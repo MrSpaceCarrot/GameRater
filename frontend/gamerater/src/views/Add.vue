@@ -1,188 +1,142 @@
-<script>
+<script setup>
+  // Libraries & Components
+  import { ref, onMounted } from 'vue';
+  import { useAuthStore } from '@/stores/AuthStore';
   import axios from 'axios';
-
-  import VueSlider from 'vue-slider-component'
-  import 'vue-slider-component/theme/default.css'
-  import Tagify from '@yaireo/tagify'
-  import '@yaireo/tagify/dist/tagify.css'
-
-  import NavBar from '../components/NavBar.vue'
-
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
   import { faPencil } from '@fortawesome/free-solid-svg-icons';
   import { faGamepad } from '@fortawesome/free-solid-svg-icons';
-
   library.add(faSteam, faPencil, faGamepad);
+  import VueSlider from 'vue-slider-component'
+  import 'vue-slider-component/theme/default.css'
+  import Tagify from '@yaireo/tagify'
+  import '@yaireo/tagify/dist/tagify.css'
+  import NavBar from '../components/NavBar.vue'
 
-  export default {
-    name: 'Add',
-    components: {
-      NavBar,
-      VueSlider,
-      FontAwesomeIcon
-    },
-    data() {
-      return {
-        // Auth
-        token: localStorage.getItem('token'),
-        apiUrl: import.meta.env.VITE_API_URL,
+  // Variables
+  // Auth
+  const authStore = useAuthStore();
+  const token = ref(authStore.token);
+  const apiUrl = ref(import.meta.env.VITE_API_URL);
 
-        // Form
-        gamename: '',
-        gamelink: '',
-        gamebannerlink: '',
-        platform: "Roblox",
-        linkformat: "https://www.roblox.com/games/xxxxxxxxx",
-        submissionloading: false,
+  // Form fields
+  let gamename = ref(null);
+  let gamelink = ref(null);
+  let gamebannerlink = ref('');
+  let platform = ref("Roblox");
+  let linkformat = ref("https://www.roblox.com/games/xxxxxxxxx");
+  let submissionloading = ref(false);
 
-        // Form messages
-        submissionmessage: '',
-        submissionmessagetype: '',
-        submissionresponse: '',
+  // Form messages
+  let submissionmessage = ref(null);
+  let submissionmessagetype = ref(null);
 
-        // Slider
-        sliderValues: [2, 16],
-        marks: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+  // Form Slider
+  let sliderValues = ref([2, 16]);
+  let marks = ref([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
 
-        // Tagify
-        tagify: '',
-        tags: []
-      }
-    },
-    mounted() {
-      // Check if user is logged in
-      if(!this.token) {
-        this.$router.push({name: 'Login', params: { message: 'missingtoken'} });
-      }
-      axios.get(this.apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${this.token}`}})
-      .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
-
-      // Setup tagify
-      this.setupTagify()
-    },
-    methods: {
-      capitalizeFirstLetter(value) {
-        return String(value).charAt(0).toUpperCase() + String(value).slice(1);
-      },
-
-      // Setup tagify
-      setupTagify() {
-        // Create tagify
-        var input = document.getElementById('gametags');
-        this.tagify = new Tagify(input, {
-          maxTags: 5,
-          whitelist: [],
-          enforceWhitelist: true,
-          dropdown: {
-            enabled: 1, 
-            maxItems: 50,
-            enabled: 0, 
-            closeOnSelect: false
-            }
-          },
-        );
-
-        // Get whitelist
-        axios.get(this.apiUrl + "/tags", {headers: {Authorization: `Token ${this.token}`}})
-        .then((response) => {
-          for(let tag of response.data) {
-            this.tags.push(tag["tag"])
-          }
-          this.tagify.whitelist = this.tags
-        })
-        .catch((error) => {console.log(error)});
-      },
-
-      // Change tab contents when clicked
-      updatePlatform(selectedPlatform) {
-        if(selectedPlatform != this.platform) {
-          this.clearForm()
-        }
-        this.platform = selectedPlatform
-
-        switch (this.platform) {
-          case "Roblox":
-            this.linkformat = "https://www.roblox.com/games/xxxxxxxxx"
-            break
-          case "Steam":
-            this.linkformat = "https://store.steampowered.com/app/xxxxxxx"
-            break
-          case "Party":
-            this.linkformat = "https://jackbox.tv (or other)"
-            break
-          case "Other":
-            this.linkformat = "https://game link here"
-            break
-        }
-
-        this.submissionmessage = '',
-        this.submissionmessagetype = ''
-      },
-
-      // Clear all fields
-      clearForm() {
-        this.gamename = ''
-        this.gamelink = ''
-        this.gamebannerlink = ''
-        this.sliderValues = [2, 16]
-        this.tagify.removeAllTags()
-      },
-
-      // Submit game form
-      submitGame() {
-        // Collect tags into list
-        var tags = []
-        for(let tag of document.getElementsByClassName("tagify__tag")) {
-          tags.push(tag.getAttribute("title"))
-        }
-
-        // Collect data object
-        const data = {
-          "name": this.gamename,
-          "platform": this.platform,
-          "link": this.gamelink,
-          "banner_link": this.gamebannerlink,
-          "min_party_size": this.sliderValues[0],
-          "max_party_size": this.sliderValues[1],
-          "tags": tags
-        };
-
-        // Form checking
-        if(data["name"] == ''){ this.submissionmessage = "Name is required"; this.submissionmessagetype = "Error"; return}
-        if(data["platform"] == ''){ this.submissionmessage = "Platform is required"; this.submissionmessagetype = "Error"; return}
-        if(data["link"] == ''){ this.submissionmessage = "Link is required"; this.submissionmessagetype = "Error"; return}
-        if(data["banner_link"] == '' && data["platform"] == "Party" || data["banner_link"] == '' && data["platform"] == "Other"){ this.submissionmessage = "Banner link is required for " + this.platform + " games"; this.submissionmessagetype = "Error"; return}
-        if(data["min_party_size"] < 2 || data["max_party_size"] > 16){ this.submissionmessage = "Invalid party size"; this.submissionmessagetype = "Error"; return}
-        if(data["tags"].length < 2 || data["tags"] > 5){ this.submissionmessage = "Please choose between 2 and 5 tags"; this.submissionmessagetype = "Error"; return}
-
-        this.submissionloading = true;
-
-        //Send request
-        axios.post(this.apiUrl + "/games/add", data, {headers: {Authorization: `Token ${this.token}`}})
-        .then((response) => {
-          this.submissionresponse = response;
-          this.submissionmessage = "Successfully added game: " + response.data["name"];
-          this.submissionmessagetype = "Success";
-          this.submissionloading = false;
-        })
-        .catch((error) => {
-          const data = error["response"]["data"]
-          for (const key in data) {
-            if (data.hasOwnProperty(key)) {
-              const value = data[key][0];
-              this.submissionmessage = `${this.capitalizeFirstLetter(key)}: ${this.capitalizeFirstLetter(value)}`
-            }
-          }
-
-          this.submissionmessagetype = "Error";
-          this.submissionloading = false; 
-        });
-        
-      } 
-    },
+  // Tagify
+  const tagify = ref(null);
+  const tags = ref([]);
+  
+  // Functions
+  // Capitalize first letter
+  function capitalizeFirstLetter(value) {
+    return String(value).charAt(0).toUpperCase() + String(value).slice(1);
   }
+
+  // Change tab contents when clicked
+  function updatePlatform(selectedPlatform) {
+    // Clear form is current tab is clicked
+    if(selectedPlatform != platform.value) {clearForm()}
+    platform.value = selectedPlatform;
+
+    // Clear submission message
+    submissionmessage.value = '';
+    submissionmessagetype.value = '';
+
+    // Change link format depending on platform
+    switch (platform.value) {
+      case "Roblox": linkformat.value = "https://www.roblox.com/games/xxxxxxxxx";
+      case "Steam": linkformat.value = "https://store.steampowered.com/app/xxxxxxx";
+      case "Party": linkformat.value = "https://jackbox.tv (or other)";
+      case "Other": linkformat.value = "https://game link here";
+    }
+  }
+
+  // Clear all fields of form
+  function clearForm() {
+    gamename.value = '';
+    gamelink.value = '';
+    gamebannerlink.value = '';
+    sliderValues.value = [2, 16];
+    tagify.value.removeAllTags();
+  }
+
+  // Submit game form
+  function submitGame() {
+    // Collect tags into list
+    let tags = []
+    for(let tag of document.getElementsByClassName("tagify__tag")) {
+      tags.push(tag.getAttribute("title"))
+    }
+
+    // Collect data object
+    const data = {
+      "name": gamename.value,
+      "platform": platform.value,
+      "link": gamelink.value,
+      "banner_link": gamebannerlink.value,
+      "min_party_size": sliderValues.value[0],
+      "max_party_size": sliderValues.value[1],
+      "tags": tags
+    };
+
+    // Form checking
+    if(data["name"] == '') { submissionmessage.value = "Name is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["platform"] == '') { submissionmessage.value = "Platform is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["link"] == '') { submissionmessage.value = "Link is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["banner_link"] == '' && data["platform"] == "Party" || data["banner_link"] == '' && data["platform"] == "Other") { submissionmessage.value = `Banner link is required for ${platform.value} games`;submissionmessagetype.value = "Error"; return;}
+    if(data["min_party_size"] < 2 || data["max_party_size"] > 16) { submissionmessage.value = "Invalid party size"; submissionmessagetype.value = "Error"; return;}
+    if(data["tags"].length < 2 || data["tags"] > 5) { submissionmessage.value = "Please choose between 2 and 5 tags"; submissionmessagetype.value = "Error"; return;}
+    submissionloading.value = true;
+
+    //Send request
+    axios.post(apiUrl.value + "/games/add", data, {headers: {Authorization: `Token ${token.value}`}})
+    .then((response) => {
+      submissionmessage.value = `Successfully added game: ${response.data["name"]}`;
+      submissionmessagetype.value = "Success";
+      submissionloading.value = false;
+    })
+    .catch((error) => {
+      const data = error["response"]["data"]
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          const value = data[key][0];
+          submissionmessage.value = `${capitalizeFirstLetter(key)}: ${capitalizeFirstLetter(value)}`
+        }
+      }
+      submissionmessagetype.value = "Error";
+      submissionloading.value = false; 
+    });
+  } 
+
+  // Mounted
+  onMounted(() => {
+    // Create tagify
+    let input = document.getElementById('gametags');
+    tagify.value = new Tagify(input, {maxTags: 5, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
+
+    // Get and set whitelist for tagify
+    axios.get(apiUrl.value + "/tags", {headers: {Authorization: `Token ${token.value}`}})
+    .then((response) => {
+      for(let tag of response.data) {tags.value.push(tag["tag"])}
+      tagify.value.whitelist = tags.value
+    })
+    .catch((error) => {console.log(error)});
+  });
 </script>
 
 <template>

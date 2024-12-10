@@ -1,67 +1,55 @@
-<script>
+<script setup>
+  // Libraries & Components
+  import { ref, onMounted } from 'vue';
+  import { useAuthStore } from '@/stores/AuthStore';
   import axios from 'axios';
-
-  import NavBar from '../components/NavBar.vue'
-
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
   import { faPencil } from '@fortawesome/free-solid-svg-icons';
   import { faGamepad } from '@fortawesome/free-solid-svg-icons';
-
   library.add(faSteam, faPencil, faGamepad);
+  import NavBar from '../components/NavBar.vue';
 
-  export default {
-    name: 'Home',
-    components: {
-      NavBar,
-      FontAwesomeIcon
-    },
-    data() {
-      return {
-        recentlyAddedGames: null,
-        recentlyUpdatedGames: null
-      };
-    },
-    mounted() {
-      // Api Url
-      const apiUrl = import.meta.env.VITE_API_URL;
+  // Variables
+  const authStore = useAuthStore();
+  const token = ref(authStore.token);
+  const apiUrl = ref(import.meta.env.VITE_API_URL);
+  let recentlyAddedGames = ref(null);
+  let recentlyUpdatedGames = ref(null);
 
-      // Check if user is logged in
-      const token = localStorage.getItem('token');
-      if(!token) {this.$router.push({name: 'Login', params: { message: 'missingtoken'} });}
-      axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
-      .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
+  // Functions
+  // Fetch data from api
+  function fetchFromAPI(url) {
+    return axios
+    .get(url, {headers: { Authorization: `Token ${token.value}` },})
+    .then((response) => response.data)
+    .catch((error) => {console.error("Error fetching data:", error); throw error;});
+  }
 
-      // Get recently added games
-      this.fetchFromAPI(`${apiUrl}/games/recentadd`, token).then((data) => {this.recentlyAddedGames = data;})
-
-      // Get recently updated games
-      this.fetchFromAPI(`${apiUrl}/games/recentupdate`, token).then((data) => {this.recentlyUpdatedGames = data})
-    },
-    methods: {
-      fetchFromAPI(url, token) {
-        return axios
-        .get(url, {headers: { Authorization: `Token ${token}` },})
-        .then((response) => response.data)
-        .catch((error) => {console.error("Error fetching data:", error); throw error;});
-      },
-
-      formatDate(date) {
-        const givenDate = new Date(date);
-        const currentDate = new Date();
-        const difference = currentDate - givenDate;
-        const daysDifference = Math.floor(difference / (1000 * 60 * 60 * 24));
-        if (daysDifference == 0) {
-          //const hoursDifference = Math.floor(difference / (1000 * 60 * 60));
-          //return hoursDifference + " Hours ago"
-          return "Today"
-        } else {
-          return daysDifference + " Days ago"
-        }
-      }
+  // Return difference between specified date and now
+  function formatDate(date) {
+    const givenDate = new Date(date);
+    const currentDate = new Date();
+    const difference = currentDate - givenDate;
+    const daysDifference = Math.floor(difference / (1000 * 60 * 60 * 24));
+    if (daysDifference == 0) {
+      //const hoursDifference = Math.floor(difference / (1000 * 60 * 60));
+      //return hoursDifference + " Hours ago"
+      return "Today"
+    } else {
+      return daysDifference + " Days ago"
     }
   }
+
+  // Mounted
+  onMounted(() => {
+    // Get recently added games
+    fetchFromAPI(`${apiUrl.value}/games/recentadd`).then((data) => {recentlyAddedGames.value = data;})
+
+    // Get recently updated games
+    fetchFromAPI(`${apiUrl.value}/games/recentupdate`).then((data) => {recentlyUpdatedGames.value = data})
+  });
 </script>
 
 <template>

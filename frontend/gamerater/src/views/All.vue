@@ -1,55 +1,40 @@
-<script>
+<script setup>
+  // Libraries & Components
+  import { ref, onMounted } from 'vue';
+  import { useAuthStore } from '@/stores/AuthStore';
   import axios from 'axios';
-
-  import NavBar from '../components/NavBar.vue'
-
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
   import { faPencil } from '@fortawesome/free-solid-svg-icons';
   import { faGamepad } from '@fortawesome/free-solid-svg-icons';
-
   library.add(faSteam, faPencil, faGamepad);
+  import NavBar from '../components/NavBar.vue';
 
-  export default {
-    name: 'All',
-    components: {
-      NavBar,
-      FontAwesomeIcon
-    },
-    data() {
-      return {
-        allGames: null,
-      };
-    },
-    mounted() {
-      // Api Url
-      const apiUrl = import.meta.env.VITE_API_URL;
+  // Variables
+  const authStore = useAuthStore();
+  const token = ref(authStore.token);
+  const apiUrl = ref(import.meta.env.VITE_API_URL);
+  let allGames = ref(null);
 
-      // Check if user is logged in
-      const token = localStorage.getItem('token');
-      if(!token) {this.$router.push({name: 'Login', params: { message: 'missingtoken'} });}
-      axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
-      .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
+  // Functions
+  // Fetch data from api
+  function fetchFromAPI(url) {
+    return axios
+    .get(url, {headers: { Authorization: `Token ${token.value}` },})
+    .then((response) => response.data)
+    .catch((error) => {console.error("Error fetching data:", error); throw error;});
+  }
 
-      // Get all games
-      this.fetchFromAPI(`${apiUrl}/games/`, token).then((data) => {this.allGames = data})
-    },
-    methods: {
-      fetchFromAPI(url, token) {
-        return axios
-        .get(url, {headers: { Authorization: `Token ${token}` },})
-        .then((response) => response.data)
-        .catch((error) => {console.error("Error fetching data:", error); throw error;});
-      }
-    }
-  };
+  // Mounted
+  onMounted(() => {
+    // Get recently added games
+    fetchFromAPI(`${apiUrl.value}/games/`).then((data) => {allGames.value = data;})
+  });
 </script>
 
 <template>
-
   <NavBar />
-
   <div class="container-fluid">
     <h2 class="text-light py-2">All Games</h2>
 

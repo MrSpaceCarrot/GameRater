@@ -1,5 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
+import { useAuthStore } from '@/stores/AuthStore';
+
 import Home from '../views/Home.vue'
 
 import Login from '../views/Login.vue'
@@ -28,6 +30,16 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  const token = authStore.token
+  if (token || to.name === 'Login' || to.name === 'AuthCallback') {
+    next()
+  } else {
+    next({name: 'Login', params: { message: 'invalidtoken'}})
+  }
+});
 
 //router.beforeEach((to, from, next) => {
 //  document.title = to.name + " | Derps Inc Gaming";

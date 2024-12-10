@@ -87,13 +87,7 @@ def game(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Authentication & Users
-# Check if current token is valid
-@api_view(["GET"])
-@authentication_classes([DiscordTokenAuthentication])
-@permission_classes([IsAuthenticated])
-def verifytoken(request):
-    return Response(status=status.HTTP_200_OK)
-
+# Discord login
 @api_view(['POST'])
 def discord_callback(request):
     access_code = request.data.get('access_code')
@@ -107,12 +101,10 @@ def discord_callback(request):
         return Response({"error": "Authentication failed"}, status=status.HTTP_401_UNAUTHORIZED)
 
     return Response({
-        "user_info": {
-            "username": user.username,
-            "discord_id": user.discord_id,
-            "avatar_link": user.avatar_link
-        },
-        "token": token
+        "token": token,
+        "username": user.username,
+        "display_name": user.display_name,
+        "avatar_link": user.avatar_link
     })
 
 # Get currently logged in user

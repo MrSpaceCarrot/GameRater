@@ -1,28 +1,22 @@
-<script>
+<script setup>
+  // Libraries & Components
+  import { useRoute } from 'vue-router';
+
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-
   library.add(faDiscord);
 
-  export default {
-    name: 'Login',
-    components: {
-      FontAwesomeIcon
-    },
-    data() {
-      return {
-        message: this.$route.params.message
-      }
-    },
-    methods: {
-      loginWithDiscord() {
-        const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
-        const redirectUri = encodeURIComponent(import.meta.env.VITE_FINAL_REDIRECT_URI);
-        const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify`;
-        window.location.href = discordAuthUrl;
-      }
-    }
+  // Variables
+  const route = useRoute();
+  const message = route.params.message;
+
+  // Functions
+  function loginWithDiscord() {
+    const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
+    const redirectUri = encodeURIComponent(import.meta.env.VITE_FINAL_REDIRECT_URI);
+    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify`;
+    window.location.href = discordAuthUrl;
   }
 </script>
 

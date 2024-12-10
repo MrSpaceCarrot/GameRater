@@ -1,9 +1,8 @@
 from django.urls import path
-from .views import games, recentlyaddedgames, recentlyupdatedgames, add_game, game, discord_callback, verifytoken, tags, current_user
+from .views import games, recentlyaddedgames, recentlyupdatedgames, add_game, game, discord_callback, tags, current_user
 
 urlpatterns = [
     # Auth
-    path('auth/verifytoken', verifytoken, name='verifytoken'),
     path('auth/discordcallback', discord_callback, name='discord_callback'),
     path('currentuser', current_user, name='current_user'),
     

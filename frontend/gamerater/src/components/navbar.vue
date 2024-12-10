@@ -1,35 +1,6 @@
-<script>
-  import axios from 'axios';
-
-  export default {
-    name: 'NavBar',
-    data() {
-      return {
-        currentUser: null,
-      }
-    },
-    mounted() {
-      // Api Url
-      const apiUrl = import.meta.env.VITE_API_URL;
-
-      // Check if user is logged in
-      const token = localStorage.getItem('token');
-      if(!token) {this.$router.push({name: 'Login', params: { message: 'missingtoken'} });}
-      axios.get(apiUrl + "/auth/verifytoken", {headers: {Authorization: `Token ${token}`}})
-      .catch((error) => {this.$router.push({name: 'Login', params: { message: 'invalidtoken'} });});
-
-      // Get current user
-      this.fetchFromAPI(`${apiUrl}/currentuser`, token).then((data) => {this.currentUser = data; console.log(data);})
-    },
-    methods: {
-      fetchFromAPI(url, token) {
-        return axios
-        .get(url, {headers: { Authorization: `Token ${token}` },})
-        .then((response) => response.data)
-        .catch((error) => {console.error("Error fetching data:", error); throw error;});
-      }
-    }
-  }
+<script setup>
+  import { useAuthStore } from '@/stores/AuthStore';
+  const authStore = useAuthStore();
 </script>
 
 <template>
@@ -80,8 +51,7 @@
             <li class="nav-item">
                 <div class="d-flex align-items-center">
                     <router-link to="/profile" class="nav-link text-light" href="">
-                        <img v-if="currentUser" :src="currentUser['avatar_link']" class="usericon rounded-circle" alt="User Avatar">
-                        <img v-else src="https://via.placeholder.com/1024" class="usericon rounded-circle" alt="User Avatar">
+                        <img :src="authStore.avatar_link" class="usericon rounded-circle" alt="User Avatar">
                     </router-link>
                     <router-link to="/logout" class="nav-link text-light logoutbutton ms-2" href="">
                         <img src="/logout.svg" class="inline-svg">
