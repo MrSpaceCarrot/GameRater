@@ -10,6 +10,7 @@ import AuthCallback from '../views/AuthCallback.vue'
 
 import All from '../views/All.vue'
 import Add from '../views/Add.vue'
+import Rate from '../views/Rate.vue'
 
 import NotFound from '../views/NotFound.vue'
 
@@ -22,6 +23,7 @@ const routes = [
 
   { path: '/all/', name: "All", component: All },
   { path: '/add/', name: "Add", component: Add },
+  { path: '/rate/', name: "Rate", component: Rate },
 
   { path: '/:pathMatch(.*)*', component: NotFound },
 ]

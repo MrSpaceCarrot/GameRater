@@ -10,6 +10,7 @@
   import { faGamepad } from '@fortawesome/free-solid-svg-icons';
   library.add(faSteam, faPencil, faGamepad);
   import NavBar from '../components/NavBar.vue';
+  import GameTile from '../components/GameTile.vue';
 
   // Variables
   const authStore = useAuthStore();
@@ -17,6 +18,7 @@
   const apiUrl = ref(import.meta.env.VITE_API_URL);
   let recentlyAddedGames = ref(null);
   let recentlyUpdatedGames = ref(null);
+  let deadGames = ref(null);
 
   // Functions
   // Fetch data from api
@@ -27,21 +29,6 @@
     .catch((error) => {console.error("Error fetching data:", error); throw error;});
   }
 
-  // Return difference between specified date and now
-  function formatDate(date) {
-    const givenDate = new Date(date);
-    const currentDate = new Date();
-    const difference = currentDate - givenDate;
-    const daysDifference = Math.floor(difference / (1000 * 60 * 60 * 24));
-    if (daysDifference == 0) {
-      //const hoursDifference = Math.floor(difference / (1000 * 60 * 60));
-      //return hoursDifference + " Hours ago"
-      return "Today"
-    } else {
-      return daysDifference + " Days ago"
-    }
-  }
-
   // Mounted
   onMounted(() => {
     // Get recently added games
@@ -49,6 +36,9 @@
 
     // Get recently updated games
     fetchFromAPI(`${apiUrl.value}/games/recentupdate`).then((data) => {recentlyUpdatedGames.value = data})
+
+    // Get dead games
+    fetchFromAPI(`${apiUrl.value}/games/dead`).then((data) => {deadGames.value = data})
   });
 </script>
 
@@ -59,23 +49,19 @@
 
     <!-- Recently added games -->
     <h5 class="text-light">Recently Added Games</h5>
-    <div v-if="recentlyAddedGames" class="row justify-content-start">
-      <div v-for="game in recentlyAddedGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 py-2">
-          <div class="imgcontainer rounded">
-            <a :href="game.link" target="_blank">
-                <img :src="game.banner_link" :alt="`${game.name} banner image`" class="img-fluid hoverfade fixedsize">
-            </a>
-          </div>
-          <div class="gametitle">
-            <p class="text-light pt-1">{{ game.name }} 
-            <img v-if="game.platform === 'Roblox'" src="/roblox.svg" alt="Roblox Logo" class="inline-svg">
-            <font-awesome-icon v-else-if="game.platform ==='Steam'" icon="fa-brands fa-steam" />
-            <font-awesome-icon v-else-if="game.platform ==='Party'" icon="fa-solid fa-pencil" />
-            <font-awesome-icon v-else-if="game.platform ==='Other'" icon="fa-solid fa-gamepad" />
-            <p class="d-inline"> - </p>
-            <p class="d-inline bg-success rounded date">{{ formatDate(game.date_added) }}</p>
-            </p>
-        </div>
+    <div v-if="recentlyAddedGames" class="row justify-content-start pb-2">
+      <div v-for="game in recentlyAddedGames" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+        <GameTile :name="game.name" 
+                  :platform="game.platform"
+                  :install-size="game.install_size"
+                  :link="game.link" 
+                  :banner-link="game.banner_link" 
+                  :date="game.date_added"
+                  date-text="Added"
+                  :tags="game.tags"
+                  :min-party-size="game.min_party_size" 
+                  :max-party-size="game.max_party_size"
+          />
       </div>
     </div>
     <p v-else>Loading...</p>
@@ -83,72 +69,42 @@
 
     <!-- Recently updated games -->
     <h5 class="text-light">Recently Updated Games</h5>
-    <div v-if="recentlyUpdatedGames" class="row justify-content-start">
-      <div v-for="game in recentlyUpdatedGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 py-2">
-          <div class="imgcontainer rounded">
-            <a :href="game.link" target="_blank">
-                <img :src="game.banner_link" :alt="`${game.name} banner image`" class="img-fluid hoverfade fixedsize">
-            </a>
-          </div>
-          <div class="gametitle">
-            <p class="text-light pt-1">{{ game.name }} 
-            <img v-if="game.platform === 'Roblox'" src="/roblox.svg" alt="Roblox Logo" class="inline-svg">
-            <font-awesome-icon v-else-if="game.platform ==='Steam'" icon="fa-brands fa-steam" />
-            <font-awesome-icon v-else-if="game.platform ==='Party'" icon="fa-solid fa-pencil" />
-            <font-awesome-icon v-else-if="game.platform ==='Other'" icon="fa-solid fa-gamepad" />
-            <p class="d-inline"> - </p>
-            <p class="d-inline bg-success rounded date">{{ formatDate(game.last_updated) }}</p>
-            </p>
-        </div>
+    <div v-if="recentlyUpdatedGames" class="row justify-content-start pb-2">
+      <div v-for="game in recentlyUpdatedGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+          <GameTile :name="game.name" 
+                    :platform="game.platform"
+                    :install-size="game.install_size"
+                    :link="game.link" 
+                    :banner-link="game.banner_link" 
+                    :date="game.last_updated"
+                    date-text="Updated"
+                    :tags="game.tags"
+                    :min-party-size="game.min_party_size" 
+                    :max-party-size="game.max_party_size" 
+            />
+      </div>
+    </div>
+    <p v-else>Loading...</p>
+    <!-- /Recently updated games -->
+
+    <!-- Recently updated games -->
+    <h5 class="text-light">Dead Games</h5>
+    <div v-if="deadGames" class="row justify-content-start pb-2">
+      <div v-for="game in deadGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+         <GameTile :name="game.name" 
+                    :platform="game.platform"
+                    :install-size="game.install_size"
+                    :link="game.link" 
+                    :banner-link="game.banner_link" 
+                    :date="game.last_updated"
+                    date-text="Updated"
+                    :tags="game.tags"
+                    :min-party-size="game.min_party_size" 
+                    :max-party-size="game.max_party_size" 
+            />
       </div>
     </div>
     <p v-else>Loading...</p>
     <!-- /Recently updated games -->
   </div>
 </template>
-
-<style>
-
-.imgcontainer {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%;
-    overflow: hidden; 
-    border-radius: inherit;
-}
-
-.fixedsize {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    min-height: 100%;
-    width: auto;
-    transform: translateX(-50%);
-    object-fit: cover;
-}
-
-.hoverfade {
-    transition: all 0.2s ease-in-out 0s;
-}
-
-.hoverfade:hover {
-    opacity: 0.5;
-}
-
-.gametitle {
-    text-align: center;
-}
-
-.inline-svg {
-    width: 1.1em;
-    height: 1.1em;
-    vertical-align: middle;
-    margin-top: -3px;
-}
-
-.date {
-  font-size: 0.8em;
-  padding: 2px;
-}
-
-</style>

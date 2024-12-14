@@ -23,13 +23,13 @@ class GameSerializer(serializers.ModelSerializer):
         return platform
     
     def validate_min_party_size(self, min_party_size):
-        if min_party_size < 2 or min_party_size > 16:
-            raise serializers.ValidationError("Must be between 2 and 16")
+        if min_party_size < 1 or min_party_size > 16:
+            raise serializers.ValidationError("Must be between 1 and 16")
         return min_party_size
     
     def validate_max_party_size(self, max_party_size):
-        if max_party_size < 2 or max_party_size > 16:
-            raise serializers.ValidationError("Must be between 2 and 16")
+        if max_party_size < 1 or max_party_size > 16:
+            raise serializers.ValidationError("Must be between 1 and 16")
         return max_party_size
     
     def validate_tags(self, tags):
@@ -52,6 +52,7 @@ class GameSerializer(serializers.ModelSerializer):
         platform = data.get("platform")
         link = data.get("link")
         banner_link = data.get("banner_link")
+        
 
         # Ensure game is unique
         if Game.objects.filter(name=name).exists():

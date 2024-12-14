@@ -29,21 +29,15 @@
                     <li class="nav-item px-3">
                         <router-link to="/add" class="nav-link nooverflow" href="">Add Game</router-link>
                     </li>
+                    <!--
                     <li class="nav-item px-3">
                         <router-link to="/top" class="nav-link nooverflow" href="">Top Rated</router-link>
                     </li>
+                    -->
                     <li class="nav-item px-3">
                         <router-link to="/rate" class="nav-link nooverflow" href="">Your Ratings</router-link>
                     </li>
                 </ul>
-
-                <!--
-
-                <form class="d-flex input-group-sm mainsearchbar me-3">
-                    <input class="form-control me-2 mainsearchbarquery" type="text" placeholder="Search">
-                </form>
-
-                -->
             </div>
         </div>
 
@@ -75,27 +69,7 @@
     width: auto;
 }
 
-.mainsearchbar {
-    flex-grow: 0;
-    flex-basis: 40%;
-}
-
-input.mainsearchbarquery, input.mainsearchbarquery[type=text]{
-    background-color: #505560;
-    color: white;
-    border: none;
-    box-shadow: none !important;
-    outline: none !important;
-}
-
 .nooverflow {
     white-space: nowrap
-}
-
-.inline-svg {
-    width: 1.1em;
-    height: 1.1em;
-    vertical-align: middle;
-    margin-top: -3px;
 }
 </style>

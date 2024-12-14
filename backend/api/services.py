@@ -3,6 +3,7 @@ from decouple import config
 import re
 import time
 from .models import Game
+from datetime import datetime
 
 # Handle logic for games
 class GameService():
@@ -86,7 +87,6 @@ class GameService():
     # Update banner images for all games
     def update_banner_images(self):
         games = Game.objects.all().order_by('name')
-        print("")
         for game in games:
             if game.update_banner_link ==False:
                 print(f"Keeing banner link for {game.name} due to exception")
@@ -97,28 +97,43 @@ class GameService():
                 time.sleep(1)
                 if new_banner_link:
                     if new_banner_link == game.banner_link:
-                        print(f"Keeing banner link for {game.name}")
+                        print(f"Keeping banner link for {game.name}")
                     else:
                         print(f"Changing banner link for {game.name} from {game.banner_link} to {new_banner_link}")
                         game.banner_link = new_banner_link
                         game.save()
                 else:
-                    print(f"Keeing banner link for {game.name}")
+                    print(f"Keeping banner link for {game.name}")
 
     # Update last updated for all games
     def update_last_updated(self):
         games = Game.objects.all().order_by('name')
-        print("")
         for game in games:
             new_last_updated = self.get_last_updated(game.platform, game.link)
             
             time.sleep(1)
             if new_last_updated:
-                if new_last_updated == game.last_updated:
-                    print(f"Keeing last updated for {game.name}")
+                parsed_new_last_updated = datetime.fromisoformat(new_last_updated).replace(microsecond=0)
+                parsed_old_last_updated = game.last_updated.replace(microsecond=0)
+
+                if parsed_new_last_updated == parsed_old_last_updated:
+                    print(f"Keeping last updated for {game.name}")
                 else:
-                    print(f"Changing last updated for {game.name} from {game.last_updated} to {new_last_updated}")
-                    game.last_updated = new_last_updated
+                    print(f"Changing last updated for {game.name} from {parsed_old_last_updated} to {parsed_new_last_updated}")
+                    game.last_updated = parsed_new_last_updated
                     game.save()
             else:
-                print(f"Keeing last updated for {game.name}")
+                print(f"Keeping last updated for {game.name}")
+
+    # Sort tags alphabetically for all games
+    def sort_tags(self):
+        games = Game.objects.all().order_by('name')
+        for game in games:
+            tags = game.tags
+            sorted_tags = sorted(tags)
+            if tags != sorted_tags:
+                print(f"Changed order of tags for {game.name}")
+                game.tags = sorted_tags
+                game.save()
+            else:
+                print(f"Tag order retained for {game.name}")

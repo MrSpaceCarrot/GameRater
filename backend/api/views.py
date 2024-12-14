@@ -19,7 +19,7 @@ def games(request):
     serializer = GameSerializer(games, many=True)
     return Response(serializer.data)
 
-# Get 10 most recently added games
+# Get 6 most recently added games
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -28,12 +28,21 @@ def recentlyaddedgames(request):
     serializer = GameSerializer(games, many=True)
     return Response(serializer.data)
 
-# Get 10 most recently updated games
+# Get 6 most recently updated games
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 def recentlyupdatedgames(request):
-    games = Game.objects.all().order_by('-last_updated')[:6]
+    games = Game.objects.filter(last_updated__isnull=False).order_by('-last_updated')[:6]
+    serializer = GameSerializer(games, many=True)
+    return Response(serializer.data)
+
+# Get 6 games which have not recieved updates the longest
+@api_view(["GET"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+def deadgames(request):
+    games = Game.objects.filter(last_updated__isnull=False).order_by('last_updated')[:6]
     serializer = GameSerializer(games, many=True)
     return Response(serializer.data)
 

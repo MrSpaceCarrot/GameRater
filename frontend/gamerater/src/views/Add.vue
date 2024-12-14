@@ -3,12 +3,13 @@
   import { ref, onMounted } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
   import axios from 'axios';
+
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
-  import { faPencil } from '@fortawesome/free-solid-svg-icons';
-  import { faGamepad } from '@fortawesome/free-solid-svg-icons';
-  library.add(faSteam, faPencil, faGamepad);
+  import { faBoxOpen, faGamepad } from '@fortawesome/free-solid-svg-icons';
+  library.add(faSteam, faBoxOpen, faGamepad);
+
   import VueSlider from 'vue-slider-component'
   import 'vue-slider-component/theme/default.css'
   import Tagify from '@yaireo/tagify'
@@ -24,7 +25,7 @@
   // Form fields
   let gamename = ref(null);
   let gamelink = ref(null);
-  let gamebannerlink = ref('');
+  let gamebannerlink = ref("");
   let platform = ref("Roblox");
   let linkformat = ref("https://www.roblox.com/games/xxxxxxxxx");
   let submissionloading = ref(false);
@@ -34,8 +35,8 @@
   let submissionmessagetype = ref(null);
 
   // Form Slider
-  let sliderValues = ref([2, 16]);
-  let marks = ref([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+  let sliderValues = ref([1, 16]);
+  let marks = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
 
   // Tagify
   const tagify = ref(null);
@@ -58,11 +59,14 @@
     submissionmessagetype.value = '';
 
     // Change link format depending on platform
-    switch (platform.value) {
-      case "Roblox": linkformat.value = "https://www.roblox.com/games/xxxxxxxxx";
-      case "Steam": linkformat.value = "https://store.steampowered.com/app/xxxxxxx";
-      case "Party": linkformat.value = "https://jackbox.tv (or other)";
-      case "Other": linkformat.value = "https://game link here";
+    if (selectedPlatform == "Roblox") {
+      linkformat.value = "https://www.roblox.com/games/xxxxxxxxx";
+    } else if (selectedPlatform == "Steam") {
+      linkformat.value = "https://store.steampowered.com/app/xxxxxxx";
+    } else if (selectedPlatform == "Party") {
+      linkformat.value = "https://jackbox.tv (or other)";
+    } else {
+      linkformat.value = "https://game link here";
     }
   }
 
@@ -71,7 +75,7 @@
     gamename.value = '';
     gamelink.value = '';
     gamebannerlink.value = '';
-    sliderValues.value = [2, 16];
+    sliderValues.value = [1, 16];
     tagify.value.removeAllTags();
   }
 
@@ -95,11 +99,11 @@
     };
 
     // Form checking
-    if(data["name"] == '') { submissionmessage.value = "Name is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["name"] == null) { submissionmessage.value = "Name is required"; submissionmessagetype.value = "Error"; return;}
     if(data["platform"] == '') { submissionmessage.value = "Platform is required"; submissionmessagetype.value = "Error"; return;}
-    if(data["link"] == '') { submissionmessage.value = "Link is required"; submissionmessagetype.value = "Error"; return;}
-    if(data["banner_link"] == '' && data["platform"] == "Party" || data["banner_link"] == '' && data["platform"] == "Other") { submissionmessage.value = `Banner link is required for ${platform.value} games`;submissionmessagetype.value = "Error"; return;}
-    if(data["min_party_size"] < 2 || data["max_party_size"] > 16) { submissionmessage.value = "Invalid party size"; submissionmessagetype.value = "Error"; return;}
+    if(data["link"] == null) { submissionmessage.value = "Link is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["banner_link"] == null && data["platform"] == "Party" || data["banner_link"] == '' && data["platform"] == "Other") { submissionmessage.value = `Banner link is required for ${platform.value} games`;submissionmessagetype.value = "Error"; return;}
+    if(data["min_party_size"] < 1 || data["max_party_size"] > 16) { submissionmessage.value = "Invalid party size"; submissionmessagetype.value = "Error"; return;}
     if(data["tags"].length < 2 || data["tags"] > 5) { submissionmessage.value = "Please choose between 2 and 5 tags"; submissionmessagetype.value = "Error"; return;}
     submissionloading.value = true;
 
@@ -159,7 +163,7 @@
             </li>
             <li class="nav-item">
                 <a @click="updatePlatform('Party')" class="nav-link" id="party-tab" href="" data-bs-toggle="tab" role="tab">Party
-                  <font-awesome-icon icon="fa-solid fa-pencil" />
+                  <font-awesome-icon icon="fa-solid fa-box-open" />
                 </a>
             </li>
             <li class="nav-item">
@@ -207,7 +211,7 @@
             <label for="gamepartysize" class="form-label text-light"><h5>Required Party Size</h5></label>
             <vue-slider 
               v-model="sliderValues"
-              :min="2"
+              :min="1"
               :max="16"
               :interval="1"
               :adsorb="true"
@@ -245,11 +249,11 @@
 }
 
 #steam-tab.active {
-  background: #2a475e ;
+  background: #2a475e;
 }
 
 #party-tab.active {
-  background: #4854f4
+  background: #4854f4;
 }
 
 #other-tab.active {
@@ -263,13 +267,6 @@
 
 #roblox-tab.active, #steam-tab.active, #party-tab.active, #other-tab.active {
   color: #fff;
-}
-
-.inline-svg {
-  width: 1.1em;
-  height: 1.1em;
-  vertical-align: middle;
-  margin-top: -3px;
 }
 
 input.formquery, input.formquery[type=text] {
