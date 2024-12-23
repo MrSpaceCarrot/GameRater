@@ -3,7 +3,7 @@
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
-  import { faBoxOpen, faGamepad, faHardDrive, faMinusSquare, faUserGroup} from '@fortawesome/free-solid-svg-icons';
+  import { faBoxOpen, faGamepad, faHardDrive, faUserGroup} from '@fortawesome/free-solid-svg-icons';
   library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faHardDrive);
 
   // Props
@@ -84,7 +84,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 
 .gametilediv {
   background-color: #49566b;

@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Game, Tag, AuthToken, DiscordUser, Tag
-from .services import GameService
+from .models import Game, Tag, Rating, AuthToken, DiscordUser, Tag
+from .services import GameService, get_user_from_auth_header
 from rest_framework.authentication import get_authorization_header
 
 class GameSerializer(serializers.ModelSerializer):
@@ -52,7 +52,6 @@ class GameSerializer(serializers.ModelSerializer):
         platform = data.get("platform")
         link = data.get("link")
         banner_link = data.get("banner_link")
-        
 
         # Ensure game is unique
         if Game.objects.filter(name=name).exists():
@@ -76,17 +75,42 @@ class GameSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"last_updated": f"Failed to retrieve from {platform} API. Link is invalid"})
             
         # Ensure added by is set
-        try:
-            header = self.context
-            token = header.split(' ')[1]
-            token_object = AuthToken.objects.get(token=token)
-            user_object = DiscordUser.objects.get(id=token_object.user_id)
-            data["added_by"] = user_object
-        except Exception:
-            data["added_by"] = None
+        request_user = get_user_from_auth_header(self.context)
+        data["added_by"] = request_user
+
+        # Check user has permissions
+        if self.instance:
+            if request_user.id != self.instance.added_by.id:
+                raise serializers.ValidationError({"Permissions": f"You do not have permission to modify this resource"})
              
         return data
     
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = '__all__'
+
+    game = serializers.PrimaryKeyRelatedField(queryset=Game.objects.all())
+    rating = serializers.IntegerField(required=True)
+    
+    def validate_rating(self, rating):
+        if rating < 1 or rating > 10:
+            raise serializers.ValidationError({"Rating": f"Rating must be between 1 and 10"})
+        return rating
+    
+    def create(self, validated_data):
+        request_user = get_user_from_auth_header(self.context)
+        request_game = validated_data["game"]
+        request_rating = validated_data["rating"]
+
+        rating, created = Rating.objects.update_or_create(
+            user=request_user,
+            game=request_game,
+            defaults={'rating': request_rating}
+        )
+        return rating
+
 
 class DiscordUserSerializer(serializers.ModelSerializer):
     class Meta:

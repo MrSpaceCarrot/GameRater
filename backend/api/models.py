@@ -5,7 +5,7 @@ from django.utils import timezone
 
 # Game model
 class Game(models.Model):
-    id =models.AutoField(primary_key=True, unique=True)
+    id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=100, default=None)
     platform = models.CharField(max_length=10, default=None)
     install_size = models.SmallIntegerField(default=None, null=True)
@@ -16,7 +16,7 @@ class Game(models.Model):
     tags = models.JSONField(default=None)
     last_updated = models.DateTimeField("Last Updated", default=None, null=True)
     date_added = models.DateTimeField("Date added", default=timezone.now)
-    added_by = models.ForeignKey("DiscordUser", on_delete=models.SET_NULL, related_name="gamesadded" ,default=None, null=True)
+    added_by = models.ForeignKey("DiscordUser", on_delete=models.SET_NULL, related_name="gamesadded", default=None, null=True)
     update_banner_link = models.BooleanField(default=True)
 
     def __str__(self):
@@ -29,6 +29,17 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.tag
+    
+# Rating model
+class Rating(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    game = models.ForeignKey("Game", on_delete=models.CASCADE, related_name="ratings", default=None)
+    user = models.ForeignKey("DiscordUser", on_delete=models.CASCADE, related_name="ratings", default=None)
+    rating = models.SmallIntegerField(default=None)
+    date_added = models.DateTimeField("Date added", default=timezone.now)
+
+    def __str__(self):
+        return self.id
     
 # Discord User Model
 class DiscordUser(models.Model):

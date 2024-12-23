@@ -11,7 +11,7 @@ export default defineConfig({
     //vueDevTools(),
   ],
   server: {
-    port: 4000,
+    port: 15000,
     host: "0.0.0.0",
   },
   resolve: {

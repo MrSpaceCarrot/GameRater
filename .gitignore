@@ -233,3 +233,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+.env.docker
+.env.local

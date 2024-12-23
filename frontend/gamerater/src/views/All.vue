@@ -48,7 +48,6 @@
   
   // Filter games
   function filterGames() {
-    console.log("Filtering...");
     if (!allGames.value) {
       return
     } else {
@@ -114,7 +113,7 @@
     tagify.value = new Tagify(inputElement, {maxTags: 3, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
 
     // Get and set whitelist for tagify
-    axios.get(apiUrl.value + "/tags", {headers: {Authorization: `Token ${token.value}`}})
+    axios.get(apiUrl.value + "/tags/", {headers: {Authorization: `Token ${token.value}`}})
     .then((response) => {
       for(let tag of response.data) {tagsWhitelist.value.push(tag["tag"])}
       tagify.value.whitelist = tagsWhitelist.value
@@ -183,6 +182,7 @@
             />
       </div>
     </div>
+    <p v-else>Loading...</p>
 </div>
 
 </template>
@@ -202,19 +202,19 @@ input.mainsearchbarquery, input.mainsearchbarquery[type=text]{
     outline: none !important;
 }
 
-.roblox {
+.roblox, .roblox:active {
   background: #e42818;
 }
 
-.steam {
+.steam, .steam:active {
   background: #2a475e;
 }
 
-.party {
+.party, .party:active {
   background: #4854f4;
 }
 
-.other {
+.other, .other:active {
   background: rgb(5, 88, 5);
 }
 

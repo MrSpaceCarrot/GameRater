@@ -147,7 +147,7 @@ CORS_ALLOW_METHODS = [
 
 # Authentication
 AUTHENTICATION_BACKENDS = [
-    'api.auth.DiscordAuthBackend'
+    'api.auth.DiscordAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

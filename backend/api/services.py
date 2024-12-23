@@ -2,7 +2,7 @@ import requests
 from decouple import config
 import re
 import time
-from .models import Game
+from .models import Game, DiscordUser, AuthToken
 from datetime import datetime
 
 # Handle logic for games
@@ -137,3 +137,14 @@ class GameService():
                 game.save()
             else:
                 print(f"Tag order retained for {game.name}")
+
+# Get user from token used
+def get_user_from_auth_header(header):
+    print("Getting user...")
+    try:
+        token = header.split(' ')[1]
+        token_object = AuthToken.objects.get(token=token)
+        user_object = DiscordUser.objects.get(id=token_object.user_id)
+        return user_object
+    except AuthToken.DoesNotExist:
+        return None

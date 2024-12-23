@@ -19,6 +19,7 @@
   let recentlyAddedGames = ref(null);
   let recentlyUpdatedGames = ref(null);
   let deadGames = ref(null);
+  let randomGames = ref(null);
 
   // Functions
   // Fetch data from api
@@ -39,6 +40,9 @@
 
     // Get dead games
     fetchFromAPI(`${apiUrl.value}/games/dead`).then((data) => {deadGames.value = data})
+
+    // Get random games
+    fetchFromAPI(`${apiUrl.value}/games/random`).then((data) => {randomGames.value = data})
   });
 </script>
 
@@ -46,6 +50,26 @@
   <NavBar />
   <div class="container-fluid">
     <h2 class="text-light py-2">Home</h2>
+
+    <!-- Random games -->
+    <h5 class="text-light">Random Games</h5>
+    <div v-if="randomGames" class="row justify-content-start pb-2">
+      <div v-for="game in randomGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+         <GameTile :name="game.name" 
+                    :platform="game.platform"
+                    :install-size="game.install_size"
+                    :link="game.link" 
+                    :banner-link="game.banner_link" 
+                    :date="game.last_updated"
+                    date-text="Updated"
+                    :tags="game.tags"
+                    :min-party-size="game.min_party_size" 
+                    :max-party-size="game.max_party_size" 
+            />
+      </div>
+    </div>
+    <p v-else>Loading...</p>
+    <!-- /Random games -->
 
     <!-- Recently added games -->
     <h5 class="text-light">Recently Added Games</h5>
