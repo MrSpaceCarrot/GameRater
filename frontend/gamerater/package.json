@@ -15,7 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@yaireo/tagify": "^4.32.2",
-    "axios": "^1.7.8",
+    "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "pinia": "^2.3.0",
     "pinia-plugin-persistedstate": "^4.2.0",
