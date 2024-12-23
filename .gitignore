@@ -237,3 +237,4 @@ coverage
 .env.docker
 .env.local
 frontend-config.json
+frontend/gamerater/public/config.json
