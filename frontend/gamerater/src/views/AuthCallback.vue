@@ -1,12 +1,13 @@
 <script setup>
   // Libraries & Components
-  import { ref, onMounted } from 'vue';
+  import { inject, ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router'
   import axios from 'axios';
   import { useAuthStore } from '@/stores/AuthStore';
 
   // Variables
-  const apiUrl = ref(import.meta.env.VITE_API_URL);
+  const config = inject('config');
+  const apiUrl = ref(config.API_URL);
   const authStore = useAuthStore()
   const router = useRouter();
 

@@ -1,6 +1,6 @@
 <script setup>
   // Libraries & Components
-  import { ref, onMounted } from 'vue';
+  import { inject, ref, onMounted } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
   import axios from 'axios';
 
@@ -13,9 +13,10 @@
   import NavBar from '../components/NavBar.vue';
 
   // Variables
+  const config = inject('config');
   const authStore = useAuthStore();
   const token = ref(authStore.token);
-  const apiUrl = ref(import.meta.env.VITE_API_URL);
+  const apiUrl = ref(config.API_URL);
   let allGames = ref(null);
 
   // Functions

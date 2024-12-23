@@ -1,5 +1,6 @@
 <script setup>
   // Libraries & Components
+  import { inject } from 'vue';
   import { useRoute } from 'vue-router';
 
   import { library } from '@fortawesome/fontawesome-svg-core';
@@ -8,13 +9,14 @@
   library.add(faDiscord);
 
   // Variables
+  const config = inject('config');
   const route = useRoute();
   const message = route.params.message;
 
   // Functions
   function loginWithDiscord() {
-    const clientId = import.meta.env.VITE_DISCORD_CLIENT_ID;
-    const redirectUri = encodeURIComponent(import.meta.env.VITE_FINAL_REDIRECT_URI);
+    const clientId = config.DISCORD_CLIENT_ID;
+    const redirectUri = encodeURIComponent(config.LOGIN_REDIRECT_URL);
     const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify`;
     window.location.href = discordAuthUrl;
   }

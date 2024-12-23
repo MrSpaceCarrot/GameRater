@@ -10,11 +10,7 @@ services:
   frontend:
     build:
       context: ./frontend/gamerater
-      args:
-        VITE_API_URL: ${VITE_API_URL}
-        VITE_DISCORD_CLIENT_ID: ${VITE_DISCORD_CLIENT_ID}
-        VITE_FINAL_REDIRECT_URI: ${VITE_FINAL_REDIRECT_URI}
     ports:
-      - "15000:80"
-    env_file:
-      - ./frontend/gamerater/.env.docker
+      - "15000:15000"
+    volumes:
+      - ./frontend-config.json:/usr/share/nginx/html/config.json

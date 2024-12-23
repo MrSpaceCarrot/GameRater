@@ -1,6 +1,6 @@
 <script setup>
   // Libraries & Components
-  import { ref, onMounted, watch } from 'vue';
+  import { inject, ref, onMounted } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
   import axios from 'axios';
 
@@ -20,9 +20,10 @@
 
   // Variables
   // Auth
+  const config = inject('config');
   const authStore = useAuthStore();
   const token = ref(authStore.token);
-  const apiUrl = ref(import.meta.env.VITE_API_URL);
+  const apiUrl = ref(config.API_URL);
 
   // Filters
   let allGames = ref(null);
