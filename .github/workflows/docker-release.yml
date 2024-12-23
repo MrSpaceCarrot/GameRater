@@ -58,9 +58,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Create source_code.zip
-      run: zip -r source_code.zip . -x .git/**
-
     - name: Upload source_code.zip to release
       uses: actions/upload-release-asset@v1
       env:
