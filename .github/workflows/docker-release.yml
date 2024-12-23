@@ -32,6 +32,7 @@ jobs:
       with:
         context: ./backend
         push: true
+        no-cache: true
         tags: |
           ghcr.io/mrspacecarrot/gamerater-backend:latest
           ghcr.io/mrspacecarrot/gamerater-backend:${{ github.event.release.tag_name }}
