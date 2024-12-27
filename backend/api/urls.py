@@ -12,6 +12,7 @@ urlpatterns = [
     path('games/recentupdate', recentlyupdatedgames, name='recentupdate'),
     path('games/dead', deadgames, name='dead'),
     path('games/random', randomgames, name='random'),
+    path('games/top', topgames, name='top'),
     path('games/add', add_game, name='add_game'),
     path('games/<int:pk>', game, name='game'),
     path('tags/', tags, name='tags'),

@@ -242,8 +242,6 @@
 
 <style>
 
-/* Message */
-
 /* Platform tabs and form*/
 #roblox-tab.active {
   background: #e42818;
@@ -296,16 +294,6 @@ h6 {
 
 /* Tagify */
 
-.tagify {
-  width: 100%;
-  padding: 0rem 0.1rem;
-  font-size: 1rem; 
-  line-height: 1.5;
-  height: calc(2.25rem); 
-  display: flex;
-  align-items: center;
-}
-
 .tagify__input, .tagify {
   background-color: #505560 !important;
   color: white !important;
@@ -314,42 +302,43 @@ h6 {
   outline: none !important;
 }
 
-.tagify__input {
-  display: inline-block;
-  align-self: center;
-  vertical-align: middle;
-  margin: 0px !important;
+.tagifyinput, .tagifyinput .tagify__tag {
+  --tag-bg: #E5E5E5;
+  --tag-hover: #E5E5E5;
+  --tag-remove-bg: #E5E5E5;
+  --tag-inset-shadow-size: 1.3em;
 }
 
-.tagify__tag {
-  display: inline-flex;
-  margin: 2px !important;
-  padding: 0px !important;
+.tagify__input, .tagify__tag {
+  margin-top: 2.4px;
+  margin-bottom: 2.4px;
+}
+
+.tagify__dropdown__item {
+  display: inline-block;
+}
+
+.tagify__dropdown__item--active {
+  background-color: #f8f9fa !important;
+  color: #000;
 }
 
 .tagify__tag:hover {
   text-decoration: none !important;
 }
 
-.tagify__dropdown__item {
-  background-color: #505560 !important;
-  color: white;
-}
-
-.tagify__dropdown__item--active {
-  background-color: #2f6ac3 !important;
-}
-
 .tagify__dropdown__wrapper, .tagify__dropdown, .tagify__dropdown__footer{
   color: white;
-  background-color: #484b52 !important;
+  background-color: #6c757d !important;
 }
 
-.tagifyinput, .tagifyinput .tagify__tag {
-  --tag-bg: #E5E5E5;
-  --tag-hover: #E5E5E5;
-  --tag-remove-bg: #E5E5E5;
-  --tag-inset-shadow-size: 1.3em;
+.tagify__input, .tagify {
+  border-top-right-radius: 0.375rem !important;
+  border-bottom-right-radius: 0.375rem !important;
+}
+
+.tagify__tag-text {
+  color: #000 !important;
 }
 
 </style>

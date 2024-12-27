@@ -3,11 +3,11 @@
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
-  import { faBoxOpen, faGamepad, faHardDrive, faUserGroup} from '@fortawesome/free-solid-svg-icons';
-  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faHardDrive);
+  import { faBoxOpen, faGamepad, faHardDrive, faUserGroup, faStar} from '@fortawesome/free-solid-svg-icons';
+  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faHardDrive, faStar);
 
   // Props
-  const props = defineProps(['name', 'platform', 'installSize', 'link', 'bannerLink', 'minPartySize', 'maxPartySize', 'tags', 'date', 'dateText']);
+  const props = defineProps(['name', 'platform', 'installSize', 'link', 'bannerLink', 'minPartySize', 'maxPartySize', 'tags', 'date', 'dateText', 'averageRating']);
 
   // Functions
   // Return difference between specified date and now
@@ -75,8 +75,9 @@
             <span v-else-if="platform ==='Other'" class="badge badge-other">Other <font-awesome-icon icon="fa-solid fa-gamepad" /></span>
 
             <span v-if="minPartySize && maxPartySize" class="badge bg-primary"><font-awesome-icon icon="fa-solid fa-user-group" /> {{ formatPartySize(minPartySize, maxPartySize) }}</span>
-            <span v-if="Number.isInteger(installSize)" class="badge bg-warning"><font-awesome-icon icon="fa-solid fa-hard-drive" /> {{ formatInstallSize(installSize) }}</span>
+            <span v-if="Number.isInteger(installSize)" class="badge bg-info"><font-awesome-icon icon="fa-solid fa-hard-drive" /> {{ formatInstallSize(installSize) }}</span>
             <span v-if="date" class="badge bg-success">{{ dateText }} {{ formatDate(date) }}</span>
+            <span v-if="averageRating" class="badge bg-warning"><font-awesome-icon icon="fa-solid fa-star" /> {{ averageRating }}</span>
 
             <span v-for="tag in tags" class="badge bg-light text-dark fw-bolder">{{ tag }}</span>
             </p>

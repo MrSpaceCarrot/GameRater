@@ -18,6 +18,7 @@ class Game(models.Model):
     date_added = models.DateTimeField("Date added", default=timezone.now)
     added_by = models.ForeignKey("DiscordUser", on_delete=models.SET_NULL, related_name="gamesadded", default=None, null=True)
     update_banner_link = models.BooleanField(default=True)
+    average_rating = models.FloatField(default=None, null=True)
 
     def __str__(self):
         return self.name

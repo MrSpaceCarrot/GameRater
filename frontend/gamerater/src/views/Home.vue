@@ -3,12 +3,6 @@
   import { inject, ref, onMounted } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
   import axios from 'axios';
-  import { library } from '@fortawesome/fontawesome-svg-core';
-  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import { faSteam } from '@fortawesome/free-brands-svg-icons';
-  import { faPencil } from '@fortawesome/free-solid-svg-icons';
-  import { faGamepad } from '@fortawesome/free-solid-svg-icons';
-  library.add(faSteam, faPencil, faGamepad);
   import NavBar from '../components/NavBar.vue';
   import GameTile from '../components/GameTile.vue';
 
@@ -21,6 +15,7 @@
   let recentlyUpdatedGames = ref(null);
   let deadGames = ref(null);
   let randomGames = ref(null);
+  let topGames = ref(null);
 
   // Functions
   // Fetch data from api
@@ -44,6 +39,9 @@
 
     // Get random games
     fetchFromAPI(`${apiUrl.value}/games/random`).then((data) => {randomGames.value = data})
+
+    // Get top games
+    fetchFromAPI(`${apiUrl.value}/games/top`).then((data) => {topGames.value = data})
   });
 </script>
 
@@ -53,9 +51,9 @@
     <h2 class="text-light py-2">Home</h2>
 
     <!-- Random games -->
-    <h5 class="text-light">Random Games</h5>
-    <div v-if="randomGames" class="row justify-content-start pb-2">
-      <div v-for="game in randomGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+    <h5 class="text-light pb-1">Random Games</h5>
+    <div v-if="randomGames" class="row justify-content-start gx-2">
+      <div v-for="game in randomGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2">
          <GameTile :name="game.name" 
                     :platform="game.platform"
                     :install-size="game.install_size"
@@ -66,6 +64,7 @@
                     :tags="game.tags"
                     :min-party-size="game.min_party_size" 
                     :max-party-size="game.max_party_size" 
+                    :average-rating="game.average_rating"
             />
       </div>
     </div>
@@ -73,9 +72,9 @@
     <!-- /Random games -->
 
     <!-- Recently added games -->
-    <h5 class="text-light">Recently Added Games</h5>
-    <div v-if="recentlyAddedGames" class="row justify-content-start pb-2">
-      <div v-for="game in recentlyAddedGames" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+    <h5 class="text-light pb-1">Recently Added Games</h5>
+    <div v-if="recentlyAddedGames" class="row justify-content-start">
+      <div v-for="game in recentlyAddedGames" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
         <GameTile :name="game.name" 
                   :platform="game.platform"
                   :install-size="game.install_size"
@@ -86,6 +85,7 @@
                   :tags="game.tags"
                   :min-party-size="game.min_party_size" 
                   :max-party-size="game.max_party_size"
+                  :average-rating="game.average_rating"
           />
       </div>
     </div>
@@ -93,9 +93,9 @@
     <!-- /Recently added games -->
 
     <!-- Recently updated games -->
-    <h5 class="text-light">Recently Updated Games</h5>
-    <div v-if="recentlyUpdatedGames" class="row justify-content-start pb-2">
-      <div v-for="game in recentlyUpdatedGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+    <h5 class="text-light pb-1">Recently Updated Games</h5>
+    <div v-if="recentlyUpdatedGames" class="row justify-content-start">
+      <div v-for="game in recentlyUpdatedGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
           <GameTile :name="game.name" 
                     :platform="game.platform"
                     :install-size="game.install_size"
@@ -105,17 +105,39 @@
                     date-text="Updated"
                     :tags="game.tags"
                     :min-party-size="game.min_party_size" 
-                    :max-party-size="game.max_party_size" 
+                    :max-party-size="game.max_party_size"
+                    :average-rating="game.average_rating"
             />
       </div>
     </div>
     <p v-else>Loading...</p>
     <!-- /Recently updated games -->
 
+    <!-- Top games -->
+    <h5 class="text-light pb-1">Top Rated Games</h5>
+    <div v-if="topGames" class="row justify-content-start">
+      <div v-for="game in topGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
+          <GameTile :name="game.name" 
+                    :platform="game.platform"
+                    :install-size="game.install_size"
+                    :link="game.link" 
+                    :banner-link="game.banner_link" 
+                    :date="game.last_updated"
+                    date-text="Updated"
+                    :tags="game.tags"
+                    :min-party-size="game.min_party_size" 
+                    :max-party-size="game.max_party_size"
+                    :average-rating="game.average_rating"
+            />
+      </div>
+    </div>
+    <p v-else>Loading...</p>
+    <!-- /Top games -->
+
     <!-- Recently updated games -->
-    <h5 class="text-light">Dead Games</h5>
-    <div v-if="deadGames" class="row justify-content-start pb-2">
-      <div v-for="game in deadGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 py-2">
+    <h5 class="text-light pb-1">Dead Games</h5>
+    <div v-if="deadGames" class="row justify-content-start">
+      <div v-for="game in deadGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
          <GameTile :name="game.name" 
                     :platform="game.platform"
                     :install-size="game.install_size"
@@ -126,6 +148,7 @@
                     :tags="game.tags"
                     :min-party-size="game.min_party_size" 
                     :max-party-size="game.max_party_size" 
+                    :average-rating="game.average_rating"
             />
       </div>
     </div>

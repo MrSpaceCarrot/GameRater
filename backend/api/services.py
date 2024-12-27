@@ -2,7 +2,7 @@ import requests
 from decouple import config
 import re
 import time
-from .models import Game, DiscordUser, AuthToken
+from .models import Game, DiscordUser, AuthToken, Rating
 from datetime import datetime
 
 # Handle logic for games
@@ -83,6 +83,26 @@ class GameService():
             
         # Return date updated
         return last_updated
+    
+    # Update average rating for game
+    def update_average_rating(self, game_id):
+        # Get all ratings for the game, get average
+        game_ratings = Rating.objects.filter(game_id=game_id)
+        total_rating = 0
+        number_ratings = 0
+        for rating in game_ratings:
+            if rating.rating != 0:
+                number_ratings += 1
+                total_rating += rating.rating
+
+        # Update game average rating
+        game = Game.objects.get(id=game_id)
+        try:
+            game.average_rating = total_rating / number_ratings
+        except ZeroDivisionError as e:
+            game.average_rating = None
+        print(f"Updating average rating for {game.name} to {game.average_rating}")
+        game.save()
 
     # Update banner images for all games
     def update_banner_images(self):
@@ -125,6 +145,12 @@ class GameService():
             else:
                 print(f"Keeping last updated for {game.name}")
 
+    # Update average ratings for all games
+    def update_average_ratings(self):
+        games = Game.objects.all()
+        for game in games:
+            self.update_average_rating(game.id)
+
     # Sort tags alphabetically for all games
     def sort_tags(self):
         games = Game.objects.all().order_by('name')
@@ -140,7 +166,6 @@ class GameService():
 
 # Get user from token used
 def get_user_from_auth_header(header):
-    print("Getting user...")
     try:
         token = header.split(' ')[1]
         token_object = AuthToken.objects.get(token=token)
