@@ -30,9 +30,9 @@
 
     <h2 class="text-light pb-2">Welcome to Derps Inc Gaming!</h2>
 
-    <div v-if="message==='invalidtoken'" class="flex-column"><div class="alert alert-danger w-25 py-1 justify-content-center d-inline-block">Please log in</div></div>
-    <div v-if="message==='logout'" class="flex-column"><div class="alert alert-success w-25 py-1 justify-content-center d-inline-block">Successfully logged out</div></div>
-    <div v-if="message==='loginfail'" class="flex-column"><div class="alert alert-danger w-25 py-1 justify-content-center d-inline-block">An error occured loggin in</div></div>
+    <div v-if="message==='invalidtoken'" class="flex-column"><div class="alert alert-danger w-25 py-0 justify-content-center d-inline-block">Please log in</div></div>
+    <div v-if="message==='logout'" class="flex-column"><div class="alert alert-success w-25 py-0 justify-content-center d-inline-block">Successfully logged out</div></div>
+    <div v-if="message==='loginfail'" class="flex-column"><div class="alert alert-danger w-25 py-0 justify-content-center d-inline-block">An error occured loggin in</div></div>
     <div v-if="message==='accountinactive'" class="flex-column"><div class="alert alert-danger w-25 py-1 justify-content-center d-inline-block">Your account needs to be activated by an administrator, please attempt another login later</div></div>
 
     <ul class="nav nav-pills flex-column pt-3">

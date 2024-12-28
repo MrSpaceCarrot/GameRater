@@ -8,6 +8,8 @@ import Login from '../views/Login.vue'
 import Logout from '../views/Logout.vue'
 import AuthCallback from '../views/AuthCallback.vue'
 
+import Profile from '../views/Profile.vue'
+
 import All from '../views/All.vue'
 import Add from '../views/Add.vue'
 import Rate from '../views/Rate.vue'
@@ -20,6 +22,8 @@ const routes = [
   { path: '/login/:message?', name: "Login", component: Login },
   { path: '/logout', name: "Logout", component: Logout },
   { path: '/auth/callback', name: "AuthCallback", component: AuthCallback },
+
+  { path: '/profile/', name: "Profile", component: Profile },
 
   { path: '/all/', name: "All", component: All },
   { path: '/add/', name: "Add", component: Add },

@@ -2,9 +2,11 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # Auth
+    # Auth & Users
     path('auth/discordcallback', discord_callback, name='discord_callback'),
     path('currentuser', current_user, name='current_user'),
+    path('users/', users, name='users'),
+    path('users/<int:pk>', user, name='user'),
     
     # Games
     path('games/', games, name='get_games'),

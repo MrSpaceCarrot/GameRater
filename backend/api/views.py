@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Game, Tag, Rating
+from .models import Game, Tag, Rating, DiscordUser
 from .serializer import GameSerializer, TagSerializer, DiscordUserSerializer, RatingSerializer
 from .services import GameService, get_user_from_auth_header
 from .auth import DiscordAuthBackend, DiscordTokenAuthentication
@@ -11,11 +11,11 @@ from django_ratelimit.decorators import ratelimit
 # Endpoints
 
 # Games
-# Get all games (name)
+# Get all games
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def games(request):
     games = Game.objects.all().order_by('name')
     serializer = GameSerializer(games, many=True)
@@ -25,7 +25,7 @@ def games(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def recentlyaddedgames(request):
     games = Game.objects.all().order_by('-date_added')[:6]
     serializer = GameSerializer(games, many=True)
@@ -35,7 +35,7 @@ def recentlyaddedgames(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def recentlyupdatedgames(request):
     games = Game.objects.filter(last_updated__isnull=False).order_by('-last_updated')[:6]
     serializer = GameSerializer(games, many=True)
@@ -45,7 +45,7 @@ def recentlyupdatedgames(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def deadgames(request):
     games = Game.objects.filter(last_updated__isnull=False).order_by('last_updated')[:6]
     serializer = GameSerializer(games, many=True)
@@ -55,7 +55,7 @@ def deadgames(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def randomgames(request):
     games = Game.objects.all().order_by('?')[:6]
     serializer = GameSerializer(games, many=True)
@@ -65,7 +65,7 @@ def randomgames(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def topgames(request):
     games = Game.objects.all().order_by('-average_rating')[:6]
     serializer = GameSerializer(games, many=True)
@@ -75,7 +75,7 @@ def topgames(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def tags(request):
     tags = Tag.objects.all().order_by('tag')
     serializer = TagSerializer(tags, many=True)
@@ -85,7 +85,7 @@ def tags(request):
 @api_view(["POST"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def add_game(request):
     serializer = GameSerializer(data=request.data, context=request.headers['Authorization'])
     if serializer.is_valid():
@@ -97,7 +97,7 @@ def add_game(request):
 @api_view(["GET", "PATCH", "DELETE"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def game(request, pk):
     # Check that game exists
     try:
@@ -135,7 +135,7 @@ def game(request, pk):
 @api_view(["POST"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def add_rating(request):
     serializer = RatingSerializer(data=request.data, context=request.headers['Authorization'])
     if serializer.is_valid():
@@ -150,7 +150,7 @@ def add_rating(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def user_ratings(request):
     games = Rating.objects.filter(user=get_user_from_auth_header(request.headers.get('Authorization')))
     serializer = RatingSerializer(games, many=True)
@@ -183,7 +183,7 @@ def discord_callback(request):
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
-@ratelimit(key='ip', rate='100/m', block=True)
+@ratelimit(key='ip', rate='60/m', block=True)
 def current_user(request):
     # Get current user's token
     user_object = get_user_from_auth_header(request.headers.get('Authorization'))
@@ -192,3 +192,29 @@ def current_user(request):
     serializer = DiscordUserSerializer(user_object)
     return Response(serializer.data)
 
+# Get all users
+@api_view(["GET"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+@ratelimit(key='ip', rate='60/m', block=True)
+def users(request):
+    users = DiscordUser.objects.all()
+    serializer = DiscordUserSerializer(users, many=True)
+    return Response(serializer.data)
+
+# Specific user
+@api_view(["GET"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+@ratelimit(key='ip', rate='60/m', block=True)
+def user(request, pk):
+    # Check that user exists
+    try:
+        user = DiscordUser.objects.get(pk=pk)
+    except DiscordUser.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    # Get user
+    if request.method == "GET":
+        serializer = DiscordUserSerializer(user)
+        return Response(serializer.data)
