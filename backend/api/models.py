@@ -52,6 +52,7 @@ class DiscordUser(models.Model):
     last_login = models.DateTimeField(default=None, null=True)
     display_name = models.CharField(max_length=100, default=None)
     display_name_last_changed = models.DateTimeField(default=None, null=True)
+    account_activated = models.BooleanField(default=False)
 
     def is_authenticated(self, request):
         return True

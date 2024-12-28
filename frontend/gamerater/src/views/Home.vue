@@ -1,16 +1,14 @@
 <script setup>
   // Libraries & Components
-  import { inject, ref, onMounted } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
-  import axios from 'axios';
+  import apiClient from '@/axios';
   import NavBar from '../components/NavBar.vue';
   import GameTile from '../components/GameTile.vue';
 
   // Variables
-  const config = inject('config');
   const authStore = useAuthStore();
   const token = ref(authStore.token);
-  const apiUrl = ref(config.API_URL);
   let recentlyAddedGames = ref(null);
   let recentlyUpdatedGames = ref(null);
   let deadGames = ref(null);
@@ -20,7 +18,7 @@
   // Functions
   // Fetch data from api
   function fetchFromAPI(url) {
-    return axios
+    return apiClient
     .get(url, {headers: { Authorization: `Token ${token.value}` },})
     .then((response) => response.data)
     .catch((error) => {console.error("Error fetching data:", error); throw error;});
@@ -29,19 +27,19 @@
   // Mounted
   onMounted(() => {
     // Get recently added games
-    fetchFromAPI(`${apiUrl.value}/games/recentadd`).then((data) => {recentlyAddedGames.value = data;})
+    fetchFromAPI("/games/recentadd").then((data) => {recentlyAddedGames.value = data;})
 
     // Get recently updated games
-    fetchFromAPI(`${apiUrl.value}/games/recentupdate`).then((data) => {recentlyUpdatedGames.value = data})
+    fetchFromAPI("/games/recentupdate").then((data) => {recentlyUpdatedGames.value = data})
 
     // Get dead games
-    fetchFromAPI(`${apiUrl.value}/games/dead`).then((data) => {deadGames.value = data})
+    fetchFromAPI("games/dead").then((data) => {deadGames.value = data})
 
     // Get random games
-    fetchFromAPI(`${apiUrl.value}/games/random`).then((data) => {randomGames.value = data})
+    fetchFromAPI("/games/random").then((data) => {randomGames.value = data})
 
     // Get top games
-    fetchFromAPI(`${apiUrl.value}/games/top`).then((data) => {topGames.value = data})
+    fetchFromAPI("/games/top").then((data) => {topGames.value = data})
   });
 </script>
 

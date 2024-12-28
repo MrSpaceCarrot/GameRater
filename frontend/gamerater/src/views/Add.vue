@@ -1,8 +1,8 @@
 <script setup>
   // Libraries & Components
-  import { inject, ref, onMounted } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
-  import axios from 'axios';
+  import apiClient from '@/axios';
 
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -18,10 +18,8 @@
 
   // Variables
   // Auth
-  const config = inject('config');
   const authStore = useAuthStore();
   const token = ref(authStore.token);
-  const apiUrl = ref(config.API_URL);
 
   // Form fields
   let gamename = ref(null);
@@ -109,7 +107,7 @@
     submissionloading.value = true;
 
     //Send request
-    axios.post(apiUrl.value + "/games/add", data, {headers: {Authorization: `Token ${token.value}`}})
+    apiClient.post("/games/add", data, {headers: {Authorization: `Token ${token.value}`}})
     .then((response) => {
       submissionmessage.value = `Successfully added game: ${response.data["name"]}`;
       submissionmessagetype.value = "Success";
@@ -135,7 +133,7 @@
     tagify.value = new Tagify(input, {maxTags: 5, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
 
     // Get and set whitelist for tagify
-    axios.get(apiUrl.value + "/tags", {headers: {Authorization: `Token ${token.value}`}})
+    apiClient.get("/tags", {headers: {Authorization: `Token ${token.value}`}})
     .then((response) => {
       for(let tag of response.data) {tags.value.push(tag["tag"])}
       tagify.value.whitelist = tags.value

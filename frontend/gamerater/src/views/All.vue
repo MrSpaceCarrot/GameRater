@@ -1,8 +1,8 @@
 <script setup>
   // Libraries & Components
-  import { inject, ref, onMounted, watch } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
-  import axios from 'axios';
+  import apiClient from '@/axios';
 
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -21,10 +21,8 @@
 
   // Variables
   // Auth
-  const config = inject('config');
   const authStore = useAuthStore();
   const token = ref(authStore.token);
-  const apiUrl = ref(config.API_URL);
 
   // Filters
   let allGames = ref(null);
@@ -45,7 +43,7 @@
   // Functions
   // Fetch data from api
   function fetchFromAPI(url) {
-    return axios
+    return apiClient
     .get(url, {headers: { Authorization: `Token ${token.value}` },})
     .then((response) => response.data)
     .catch((error) => {console.error("Error fetching data:", error); throw error;});
@@ -187,14 +185,14 @@
   // Mounted
   onMounted(() => {
     // Get all games
-    fetchFromAPI(`${apiUrl.value}/games/`).then((data) => {allGames.value = data; filteredGames.value = data})
+    fetchFromAPI("/games/").then((data) => {allGames.value = data; filteredGames.value = data})
 
     // Create tagify
     inputElement = document.getElementById('gametags');
     tagify.value = new Tagify(inputElement, {maxTags: 5, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
 
     // Get and set whitelist for tagify
-    axios.get(apiUrl.value + "/tags/", {headers: {Authorization: `Token ${token.value}`}})
+    apiClient.get("/tags/", {headers: {Authorization: `Token ${token.value}`}})
     .then((response) => {
       for(let tag of response.data) {tagsWhitelist.value.push(tag["tag"])}
       tagify.value.whitelist = tagsWhitelist.value

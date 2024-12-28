@@ -1,8 +1,8 @@
 <script setup>
   // Libraries & Components
-  import { inject, ref, onMounted } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
-  import axios from 'axios';
+  import apiClient from '@/axios';
 
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -13,10 +13,8 @@
   import NavBar from '../components/NavBar.vue';
 
   // Variables
-  const config = inject('config');
   const authStore = useAuthStore();
   const token = ref(authStore.token);
-  const apiUrl = ref(config.API_URL);
   let allGames = ref(null);
   let userRatings = ref(null);
   let filteredSort = ref("Your Rating");
@@ -24,7 +22,7 @@
   // Functions
   // Fetch data from api
   function fetchFromAPI(url) {
-    return axios
+    return apiClient
     .get(url, {headers: { Authorization: `Token ${token.value}` },})
     .then((response) => response.data)
     .catch((error) => {console.error("Error fetching data:", error); throw error;});
@@ -83,10 +81,10 @@
     };
 
     // Send request
-    axios.post(apiUrl.value + "/ratings/add/", data, {headers: {Authorization: `Token ${token.value}`}})
+    apiClient.post("/ratings/add/", data, {headers: {Authorization: `Token ${token.value}`}})
     .then (() => {
       // Refresh user ratings
-      fetchFromAPI(`${apiUrl.value}/ratings/user`).then((data) => {userRatings.value = data;})
+      fetchFromAPI("/ratings/user").then((data) => {userRatings.value = data;})
       .then(() => {
         updateRatingTile(gameId, rating);
         updateSort(filteredSort.value);
@@ -124,10 +122,10 @@
   // Mounted
   onMounted(() => {
     // Get all games
-    fetchFromAPI(`${apiUrl.value}/games/`).then((data) => {allGames.value = data;})
+    fetchFromAPI("/games/").then((data) => {allGames.value = data;})
 
     // Get user ratings
-    fetchFromAPI(`${apiUrl.value}/ratings/user`).then((data) => {userRatings.value = data;})
+    fetchFromAPI("/ratings/user").then((data) => {userRatings.value = data;})
     .then(() => {
       updateRatingTiles();
       updateSort("Your Rating");

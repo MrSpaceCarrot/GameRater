@@ -9,6 +9,7 @@ import uuid
 from decouple import config
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from .services import GameService, get_user_from_auth_header
 
 # Discord authentication custom backend
 class DiscordAuthBackend(BaseBackend):
@@ -53,15 +54,20 @@ class DiscordAuthBackend(BaseBackend):
 # Discord token authentication
 class DiscordTokenAuthentication(BaseAuthentication):
     def authenticate(self, request):
-        token = request.headers.get('Authorization')
-        if not token:
+        header = request.headers.get('Authorization')
+        if not header:
             return None
 
-        token = token.split(' ')[-1]
+        token = header.split(' ')[-1]
         try:
             discord_token = AuthToken.objects.get(token=token)
         except AuthToken.DoesNotExist:
             raise AuthenticationFailed("Invalid token")
+        
+        # Check that the user is activated
+        user = get_user_from_auth_header(header)
+        if(not user.account_activated):
+            raise AuthenticationFailed("Account has not been activated")
 
         return (discord_token.user, None)
 

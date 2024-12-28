@@ -29,11 +29,6 @@
                     <li class="nav-item px-3">
                         <router-link to="/add" class="nav-link nooverflow" href="">Add Game</router-link>
                     </li>
-                    <!--
-                    <li class="nav-item px-3">
-                        <router-link to="/top" class="nav-link nooverflow" href="">Top Rated</router-link>
-                    </li>
-                    -->
                     <li class="nav-item px-3">
                         <router-link to="/rate" class="nav-link nooverflow" href="">Your Ratings</router-link>
                     </li>
