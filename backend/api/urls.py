@@ -2,9 +2,13 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # Auth & Users
+    # Auth
     path('auth/discordcallback', discord_callback, name='discord_callback'),
-    path('currentuser', current_user, name='current_user'),
+    path('auth/logout', logout, name='logout'),
+    path('auth/logoutall', logoutall, name='logoutall'),
+
+    # Users
+    path('users/currentuser', current_user, name='current_user'),
     path('users/', users, name='users'),
     path('users/<int:pk>', user, name='user'),
     
@@ -17,7 +21,7 @@ urlpatterns = [
     path('games/top', topgames, name='top'),
     path('games/add', add_game, name='add_game'),
     path('games/<int:pk>', game, name='game'),
-    path('tags/', tags, name='tags'),
+    path('games/tags/', tags, name='tags'),
 
     # Ratings
     path('ratings/add/', add_rating, name='add_rating'),

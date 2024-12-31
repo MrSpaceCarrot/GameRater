@@ -18,7 +18,14 @@
     <li class="nav-item">
       <div class="d-inline-block">
         <router-link to="/logout" class="nav-link text-light logoutbutton ms-2" href="">
-            <p class="nav-link text-light bg-danger">Logout</p>
+            <p class="nav-link text-light bg-danger mb-0">Logout (This device)</p>
+         </router-link>
+      </div>
+    </li>
+    <li class="nav-item">
+      <div class="d-inline-block">
+        <router-link :to="{ name: 'Logout', params: { type: 'all' }}" class="nav-link text-light logoutbutton ms-2" href="">
+            <p class="nav-link text-light bg-danger">Logout (All devices)</p>
          </router-link>
       </div>
     </li>

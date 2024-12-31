@@ -22,7 +22,9 @@ apiClient.interceptors.response.use(
     if (error.response && error.response.status === 403) {
       const customMessage = error.response.data.detail;
       if (customMessage === 'Account has not been activated') {
-        router.push({ name: 'Login', params: { message: 'accountinactive' } });
+        router.push({ name: 'Login', query: { message: 'accountinactive' } });
+      } else {
+        router.push({ name: 'Login', query: { message: 'invalidtoken' } });
       }
     }
     return Promise.reject(error);

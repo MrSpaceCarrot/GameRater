@@ -20,7 +20,7 @@ const routes = [
   { path: '/', name: "Home", component: Home },
 
   { path: '/login/:message?', name: "Login", component: Login },
-  { path: '/logout', name: "Logout", component: Logout },
+  { path: '/logout:type?', name: "Logout", component: Logout },
   { path: '/auth/callback', name: "AuthCallback", component: AuthCallback },
 
   { path: '/profile/', name: "Profile", component: Profile },
@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
   if (token || to.name === 'Login' || to.name === 'AuthCallback') {
     next()
   } else {
-    next({name: 'Login', params: { message: 'invalidtoken'}})
+    next({name: 'Login', query: { message: 'invalidtoken'}})
   }
 });
 

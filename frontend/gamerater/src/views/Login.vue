@@ -11,7 +11,7 @@
   // Variables
   const config = inject('config');
   const route = useRoute();
-  const message = route.params.message;
+  const message = route.query.message;
 
   // Functions
   function loginWithDiscord() {

@@ -133,7 +133,7 @@
     tagify.value = new Tagify(input, {maxTags: 5, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
 
     // Get and set whitelist for tagify
-    apiClient.get("/tags", {headers: {Authorization: `Token ${token.value}`}})
+    apiClient.get("/games/tags", {headers: {Authorization: `Token ${token.value}`}})
     .then((response) => {
       for(let tag of response.data) {tags.value.push(tag["tag"])}
       tagify.value.whitelist = tags.value
@@ -230,7 +230,7 @@
         <!-- /Game Tags-->
         <!-- /Entry fields-->
         
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" :class="{ disabled: submissionloading }">
           Add Game
           <span v-if="submissionloading===true" class="spinner-border spinner-border-sm"></span>
         </button>

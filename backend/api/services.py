@@ -4,6 +4,7 @@ import re
 import time
 from .models import Game, DiscordUser, AuthToken, Rating
 from datetime import datetime
+from django.utils import timezone
 
 # Handle logic for games
 class GameService():
@@ -173,3 +174,13 @@ def get_user_from_auth_header(header):
         return user_object
     except AuthToken.DoesNotExist:
         return None
+
+# Clear expired tokens
+def clear_expired_tokens():
+    token_objects = AuthToken.objects.all()
+    for token_object in token_objects:
+        if timezone.now() > token_object.expiry_date:
+            print(f"Deleting expired token {token_object.id}")
+            token_object.delete()
+        else:
+            print(f"Keeping token {token_object.id}")

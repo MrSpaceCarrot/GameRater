@@ -1,5 +1,10 @@
 from django.db import models
 from django.utils import timezone
+from datetime import datetime, timedelta
+
+# Add one week for tokens
+def add_one_week():
+    return timezone.now() + timedelta(weeks=1)
 
 # Create your models here.
 
@@ -62,9 +67,10 @@ class DiscordUser(models.Model):
 
 # Auth Token Model
 class AuthToken(models.Model):
-    user = models.OneToOneField('DiscordUser', on_delete=models.CASCADE)
+    user = models.ForeignKey("DiscordUser", on_delete=models.CASCADE, related_name="tokens", default=None)
     token = models.CharField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True)
+    expiry_date = models.DateTimeField("Expiry Date", default=add_one_week)
 
     def __str__(self):
         return self.token

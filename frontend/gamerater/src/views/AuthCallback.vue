@@ -27,7 +27,7 @@
       router.push('/');
     })
     .catch((error) => {
-      router.push({ name: 'Login', params: { message: 'loginfail' } });
+      router.push({ name: 'Login', query: { message: 'loginfail' } });
     });
   });
 </script>

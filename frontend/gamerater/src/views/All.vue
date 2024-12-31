@@ -192,7 +192,7 @@
     tagify.value = new Tagify(inputElement, {maxTags: 5, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
 
     // Get and set whitelist for tagify
-    apiClient.get("/tags/", {headers: {Authorization: `Token ${token.value}`}})
+    apiClient.get("/games/tags/", {headers: {Authorization: `Token ${token.value}`}})
     .then((response) => {
       for(let tag of response.data) {tagsWhitelist.value.push(tag["tag"])}
       tagify.value.whitelist = tagsWhitelist.value

@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Game, Tag, Rating, DiscordUser
+from .models import Game, Tag, Rating, DiscordUser, AuthToken
 from .serializer import GameSerializer, TagSerializer, DiscordUserSerializer, RatingSerializer
 from .services import GameService, get_user_from_auth_header
 from .auth import DiscordAuthBackend, DiscordTokenAuthentication
@@ -141,7 +141,6 @@ def add_rating(request):
     if serializer.is_valid():
         rating = serializer.save()
         service = GameService()
-        print(rating.game_id)
         service.update_average_rating(rating.game_id)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -179,13 +178,39 @@ def discord_callback(request):
         "avatar_link": user.avatar_link
     })
 
+# Log out by deleting current user's token
+@api_view(["POST"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+@ratelimit(key='ip', rate='60/m', block=True)
+def logout(request):
+    token = request.headers.get('Authorization').split(' ')[1]
+    token_object = AuthToken.objects.get(token=token)
+    if token_object:
+        token_object.delete()
+        return Response({"detail": "Successfully signed out"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Token does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+    
+# Log out on all devices by deleting all of the user's tokens
+@api_view(["POST"])
+@authentication_classes([DiscordTokenAuthentication])
+@permission_classes([IsAuthenticated])
+@ratelimit(key='ip', rate='60/m', block=True)
+def logoutall(request):
+    user_object = get_user_from_auth_header(request.headers.get('Authorization'))
+    token_objects = AuthToken.objects.filter(user_id=user_object)
+    for token_object in token_objects:
+        token_object.delete()
+    return Response({"detail": "Successfully signed out on all devices"}, status=status.HTTP_200_OK)
+
 # Get currently logged in user
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def current_user(request):
-    # Get current user's token
+    # Get current user
     user_object = get_user_from_auth_header(request.headers.get('Authorization'))
     
     # Return object

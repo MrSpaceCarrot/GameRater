@@ -34,11 +34,11 @@ class DiscordAuthBackend(BaseBackend):
             user.last_login = timezone.now()
             user.save()
 
-        # Get token for user
-        token, _ = AuthToken.objects.get_or_create(user=user)
-        if not token.token:
-            token.token = str(uuid.uuid4())
-            token.save()
+        # Create token for user
+        token = AuthToken()
+        token.user = user
+        token.token = str(uuid.uuid4())
+        token.save()
 
         # Return user and token
         return user, token.token
@@ -63,6 +63,10 @@ class DiscordTokenAuthentication(BaseAuthentication):
             discord_token = AuthToken.objects.get(token=token)
         except AuthToken.DoesNotExist:
             raise AuthenticationFailed("Invalid token")
+        
+        # Check that the token is not expired
+        if(timezone.now() > discord_token.expiry_date):
+            raise AuthenticationFailed("Expired token")
         
         # Check that the user is activated
         user = get_user_from_auth_header(header)
