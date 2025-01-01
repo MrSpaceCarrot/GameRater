@@ -5,9 +5,14 @@ import time
 from .models import Game, DiscordUser, AuthToken, Rating
 from datetime import datetime
 from django.utils import timezone
+import logging
+from typing import Tuple, Union
 
 # Handle logic for games
 class GameService():
+    def __init__(self):
+        self.logger = logging.getLogger("services")
+
     # Get Roblox universe id for a link
     def get_roblox_universe_id(self, link):
         # Get place id using re
@@ -99,18 +104,28 @@ class GameService():
         # Update game average rating
         game = Game.objects.get(id=game_id)
         try:
-            game.average_rating = total_rating / number_ratings
+            new_average_rating = total_rating / number_ratings
+            if new_average_rating != game.average_rating:
+                self.logger.debug(f"Updating average rating for {game.name} from {game.average_rating} to {new_average_rating}")
+                game.average_rating = new_average_rating
+            else:
+                self.logger.debug(f"Keeping average rating for {game.name} at {game.average_rating}")
         except ZeroDivisionError as e:
             game.average_rating = None
-        print(f"Updating average rating for {game.name} to {game.average_rating}")
+            self.logger.debug(f"Updating average rating for {game.name} to None")
         game.save()
 
     # Update banner images for all games
-    def update_banner_images(self):
+    def update_banner_images(self) -> Tuple[int, int, int]:
+        kept = 0
+        updated = 0
+        exceptions = 0
+
         games = Game.objects.all().order_by('name')
         for game in games:
-            if game.update_banner_link ==False:
-                print(f"Keeing banner link for {game.name} due to exception")
+            if game.update_banner_link == False:
+                self.logger.debug(f"Keeping banner link for {game.name} due to exception")
+                exceptions += 1
                 continue
             else:
                 new_banner_link = self.get_banner_link(game.platform, game.link)
@@ -118,16 +133,24 @@ class GameService():
                 time.sleep(1)
                 if new_banner_link:
                     if new_banner_link == game.banner_link:
-                        print(f"Keeping banner link for {game.name}")
+                        self.logger.debug(f"Keeping banner link for {game.name}")
+                        kept += 1
                     else:
-                        print(f"Changing banner link for {game.name} from {game.banner_link} to {new_banner_link}")
+                        self.logger.debug(f"Changing banner link for {game.name} from {game.banner_link} to {new_banner_link}")
                         game.banner_link = new_banner_link
                         game.save()
+                        updated += 1
                 else:
-                    print(f"Keeping banner link for {game.name}")
+                    self.logger.debug(f"Keeping banner link for {game.name}")
+                    kept += 1
+
+        return kept, updated, exceptions
 
     # Update last updated for all games
-    def update_last_updated(self):
+    def update_last_updated(self) -> Tuple[int, int]:
+        kept = 0
+        updated = 0
+
         games = Game.objects.all().order_by('name')
         for game in games:
             new_last_updated = self.get_last_updated(game.platform, game.link)
@@ -138,13 +161,18 @@ class GameService():
                 parsed_old_last_updated = game.last_updated.replace(microsecond=0)
 
                 if parsed_new_last_updated == parsed_old_last_updated:
-                    print(f"Keeping last updated for {game.name}")
+                    self.logger.debug(f"Keeping last updated for {game.name}")
+                    kept += 1
                 else:
-                    print(f"Changing last updated for {game.name} from {parsed_old_last_updated} to {parsed_new_last_updated}")
+                    self.logger.debug(f"Changing last updated for {game.name} from {parsed_old_last_updated} to {parsed_new_last_updated}")
                     game.last_updated = parsed_new_last_updated
                     game.save()
+                    updated += 1
             else:
-                print(f"Keeping last updated for {game.name}")
+                self.logger.debug(f"Keeping last updated for {game.name}")
+                kept += 1
+
+        return kept, updated
 
     # Update average ratings for all games
     def update_average_ratings(self):
@@ -153,20 +181,27 @@ class GameService():
             self.update_average_rating(game.id)
 
     # Sort tags alphabetically for all games
-    def sort_tags(self):
+    def sort_tags(self) -> Tuple[int, int]:
+        kept = 0
+        changed = 0
         games = Game.objects.all().order_by('name')
+
         for game in games:
             tags = game.tags
             sorted_tags = sorted(tags)
             if tags != sorted_tags:
-                print(f"Changed order of tags for {game.name}")
+                self.logger.debug(f"Changed order of tags for {game.name}")
                 game.tags = sorted_tags
                 game.save()
+                changed += 1
             else:
-                print(f"Tag order retained for {game.name}")
+                self.logger.debug(f"Tag order retained for {game.name}")
+                kept += 1
+
+        return kept, changed
 
 # Get user from token used
-def get_user_from_auth_header(header):
+def get_user_from_auth_header(header: str) -> Union[DiscordUser, None]:
     try:
         token = header.split(' ')[1]
         token_object = AuthToken.objects.get(token=token)
@@ -176,11 +211,19 @@ def get_user_from_auth_header(header):
         return None
 
 # Clear expired tokens
-def clear_expired_tokens():
+def clear_expired_tokens() -> Tuple[int, int]:
+    logger = logging.getLogger("services")
+    kept = 0
+    deleted = 0
     token_objects = AuthToken.objects.all()
+
     for token_object in token_objects:
         if timezone.now() > token_object.expiry_date:
-            print(f"Deleting expired token {token_object.id}")
+            logger.debug(f"Deleting expired token {token_object.id}")
             token_object.delete()
+            deleted += 1
         else:
-            print(f"Keeping token {token_object.id}")
+            logger.debug(f"Keeping token {token_object.id}")
+            kept += 1
+
+    return kept, deleted

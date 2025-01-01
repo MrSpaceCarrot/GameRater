@@ -1,15 +1,13 @@
 from typing import Any
 from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils import timezone
-from django.http import HttpRequest
 from .models import DiscordUser, AuthToken
 import requests
 import uuid
 from decouple import config
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
-from .services import GameService, get_user_from_auth_header
+from .services import get_user_from_auth_header
 
 # Discord authentication custom backend
 class DiscordAuthBackend(BaseBackend):

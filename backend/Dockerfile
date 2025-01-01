@@ -30,4 +30,4 @@ COPY . .
 EXPOSE 15001
 
 # Run Gunicorn as the default application server
-CMD ["gunicorn", "--bind", "0.0.0.0:15001", "--workers", "2", "gamerater.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:15001", "--workers", "1", "gamerater.wsgi:application"]

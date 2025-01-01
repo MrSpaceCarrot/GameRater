@@ -161,3 +161,56 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ),
 }
+
+# Logging
+DJANGO_LOG_LEVEL = config("DJANGO_LOG_LEVEL")
+SERVICES_LOG_LEVEL = config("SERVICES_LOG_LEVEL")
+SCHEDULER_LOG_LEVEL = config("SCHEDULER_LOG_LEVEL")
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] [{levelname}] [{name}]: {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'logfile': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'services.log'),
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+        'formatter': 'verbose',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
+            'propagate': False,
+        },
+        'services': {
+            'handlers': ['console', 'logfile'],
+            'level': SERVICES_LOG_LEVEL,
+            'propagate': False,
+        },
+        'apscheduler': {
+            'handlers': ['console'],
+            'level': SCHEDULER_LOG_LEVEL,
+            'propagate': False,
+        },
+    },
+}
