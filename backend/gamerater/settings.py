@@ -186,8 +186,9 @@ LOGGING = {
         'logfile': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'services.log'),
-            'backupCount': 3,
+            'filename': os.path.join(BASE_DIR, 'logs', 'application.log'),
+            'backupCount': 5,
+            'maxBytes': 100000,
             'formatter': 'verbose',
         },
     },
@@ -198,7 +199,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['console', 'logfile'],
             'level': DJANGO_LOG_LEVEL,
             'propagate': False,
         },
@@ -208,7 +209,7 @@ LOGGING = {
             'propagate': False,
         },
         'apscheduler': {
-            'handlers': ['console'],
+            'handlers': ['console', 'logfile'],
             'level': SCHEDULER_LOG_LEVEL,
             'propagate': False,
         },

@@ -20,16 +20,16 @@ def start_scheduler():
 
     if scheduler is None or not scheduler.running:
         jobstores = {'default': MemoryJobStore()}
-        executors = {'default': ThreadPoolExecutor(1)}
-        job_defaults = {'coalesce': False, 'max_instances': 2}
+        executors = {'default': ThreadPoolExecutor(10)}
+        job_defaults = {'coalesce': True, 'max_instances': 10}
 
         scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults)
 
         scheduler.add_job(call_command, 'cron', args=['clear_expired_tokens'], minute=0, id='clear_expired_tokens_job')
-        scheduler.add_job(call_command, 'cron', args=['sort_tags'], minute=10, id='sort_tags_job')
-        scheduler.add_job(call_command, 'cron', args=['update_average_ratings'], minute=20, id='update_average_ratings_job')
-        scheduler.add_job(call_command, 'cron', args=['update_banner_images'], minute=30, id='update_banner_images_job')
-        scheduler.add_job(call_command, 'cron', args=['update_last_updated'], minute=40, id='update_last_updated_job')
+        scheduler.add_job(call_command, 'cron', args=['sort_tags'], minute=0, id='sort_tags_job')
+        scheduler.add_job(call_command, 'cron', args=['update_average_ratings'], minute=0, id='update_average_ratings_job')
+        scheduler.add_job(call_command, 'cron', args=['update_banner_images'], minute='*/15', id='update_banner_images_job')
+        scheduler.add_job(call_command, 'cron', args=['update_last_updated'], minute='*/15', id='update_last_updated_job')
 
         scheduler.start()
         logger.info("Scheduler started.")
