@@ -95,8 +95,8 @@ class RatingSerializer(serializers.ModelSerializer):
     rating = serializers.IntegerField(required=True)
     
     def validate_rating(self, rating):
-        if rating < 0 or rating > 10:
-            raise serializers.ValidationError({"Rating": f"Rating must be between 1 and 10, 0 for unrated"})
+        if rating < -1 or rating > 10:
+            raise serializers.ValidationError({"Rating": f"Rating must be between 1 and 10, 0 for unrated, -1 for ignored"})
         return rating
     
     def create(self, validated_data):

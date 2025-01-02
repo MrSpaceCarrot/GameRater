@@ -8,8 +8,8 @@
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
   import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
-  import { faBoxOpen, faGamepad, faMagnifyingGlass, faTag, faUserGroup, faStar } from '@fortawesome/free-solid-svg-icons';
-  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faTag, faMagnifyingGlass, faStar, faCircleXmark);
+  import { faBoxOpen, faGamepad, faMagnifyingGlass, faTag, faUserGroup, faStar, faArrowDownAZ, faFire, faPlus, faDownload } from '@fortawesome/free-solid-svg-icons';
+  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faTag, faMagnifyingGlass, faStar, faCircleXmark, faArrowDownAZ, faFire, faPlus, faDownload);
 
   import VueSlider from 'vue-slider-component'
   import 'vue-slider-component/theme/default.css'
@@ -232,13 +232,18 @@
 
         <div class="row-12 dropdown">
           <button type="button" class="btn btn-secondary dropdown-toggle w-100 text-start" data-bs-toggle="dropdown">
-            Sort by: {{ filteredSort}}
+            Sort by: 
+            <font-awesome-icon v-if="filteredSort==='Name'" icon="fa-solid fa-arrow-down-a-z" />
+            <font-awesome-icon v-if="filteredSort==='Top Rated'" icon="fa-solid fa-fire" />
+            <font-awesome-icon v-if="filteredSort==='Date Added'" icon="fa-solid fa-plus" />
+            <font-awesome-icon v-if="filteredSort==='Last Updated'" icon="fa-solid fa-download" />
+            {{ filteredSort}}
           </button>
           <ul class="dropdown-menu w-100 bg-secondary">
-            <li><a @click="updateSort('Name')" class="dropdown-item bg-secondary">Name</a></li>
-            <li><a @click="updateSort('Top Rated')" class="dropdown-item bg-secondary">Top Rated</a></li>
-            <li><a @click="updateSort('Date Added')" class="dropdown-item bg-secondary">Date Added</a></li>
-            <li><a @click="updateSort('Last Updated')" class="dropdown-item bg-secondary">Last Updated</a></li>
+            <li><a @click="updateSort('Name')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-arrow-down-a-z" /> Name</a></li>
+            <li><a @click="updateSort('Top Rated')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-fire" /> Top Rated</a></li>
+            <li><a @click="updateSort('Date Added')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-plus"/> Date Added</a></li>
+            <li><a @click="updateSort('Last Updated')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-download" /> Last Updated</a></li>
           </ul>
         </div> 
 

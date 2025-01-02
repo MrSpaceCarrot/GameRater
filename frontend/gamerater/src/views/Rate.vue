@@ -7,8 +7,8 @@
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
-  import { faBoxOpen, faGamepad, faHardDrive, faUserGroup} from '@fortawesome/free-solid-svg-icons';
-  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faHardDrive);
+  import { faArrowDownAZ, faBoxOpen, faEyeSlash, faGamepad, faHardDrive, faList, faStar, faUserGroup} from '@fortawesome/free-solid-svg-icons';
+  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faHardDrive, faEyeSlash, faArrowDownAZ, faStar, faList);
   
   import NavBar from '../components/NavBar.vue';
 
@@ -108,6 +108,9 @@
           const ratingA = userRatings.value.find(obj => obj.game === a.id)?.rating || null;
           const ratingB = userRatings.value.find(obj => obj.game === b.id)?.rating || null;
 
+          if (ratingA === -1 && ratingB !== -1) return 1;
+          if (ratingB === -1 && ratingA !== -1) return -1;
+
           if (ratingA === null && ratingB === null) return 0;
           if (ratingA === null) return -1;
           if (ratingB === null) return 1;
@@ -140,11 +143,14 @@
 
     <div class="row-12 dropdown mb-3">
       <button type="button" class="btn btn-secondary dropdown-toggle text-start" data-bs-toggle="dropdown">
-        Sort by: {{ filteredSort}}
+        Sort by: 
+        <font-awesome-icon v-if="filteredSort==='Name'" icon="fa-solid fa-arrow-down-a-z" />
+        <font-awesome-icon v-if="filteredSort==='Your Rating'" icon="fa-solid fa-star" />
+        {{ filteredSort}}
       </button>
       <ul class="dropdown-menu bg-secondary">
-        <li><a @click="updateSort('Name')" class="dropdown-item bg-secondary">Name</a></li>
-        <li><a @click="updateSort('Your Rating')" class="dropdown-item bg-secondary">Your Rating</a></li>
+        <li><a @click="updateSort('Name')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-arrow-down-a-z" /> Name</a></li>
+        <li><a @click="updateSort('Your Rating')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-star" /> Your Rating</a></li>
       </ul>
     </div> 
 
@@ -153,7 +159,7 @@
 
         <div class="row">
         
-          <div class="col-12 col-md-6 d-flex align-items-center justify-content-start">
+          <div class="col-12 col-md-4 d-flex align-items-center justify-content-start">
             <div class="aspect-ratio-box">
               <a :href="game.link" target="_blank">
                 <img :src="game.banner_link" :alt="`${game.name} banner image`" class="img-fluid aspect-ratio-content rounded">
@@ -162,9 +168,10 @@
             <span class="px-3">{{ game.name }}</span>
           </div>
 
-          <div class="col-12 col-md-6 d-flex align-items-center justify-content-end">
+          <div class="col-12 col-md-8 d-flex align-items-center justify-content-end">
             <div class="nav-item ml-auto btn-group" :id="`ratinggroup-${game.id}`">
-            <button @click="submitRating(game.id, 0)" type="button" :id="`rating-${game.id}-0`" class="btn btn-sm btn-secondary px-3">Haven't played</button>
+            <button @click="submitRating(game.id, -1)" type="button" :id="`rating-${game.id}--1`" class="btn btn-sm btn-secondary px-3"><font-awesome-icon icon="fa-solid fa-eye-slash" /> Ignore</button>
+            <button @click="submitRating(game.id, 0)" type="button" :id="`rating-${game.id}-0`" class="btn btn-sm btn-secondary px-3"><font-awesome-icon icon="fa-solid fa-list" /> Haven't played</button>
             <button @click="submitRating(game.id, 1)" type="button" :id="`rating-${game.id}-1`" class="btn btn-sm btn-secondary px-3">1</button>
             <button @click="submitRating(game.id, 2)" type="button" :id="`rating-${game.id}-2`" class="btn btn-sm btn-secondary px-3">2</button>
             <button @click="submitRating(game.id, 3)" type="button" :id="`rating-${game.id}-3`" class="btn btn-sm btn-secondary px-3">3</button>

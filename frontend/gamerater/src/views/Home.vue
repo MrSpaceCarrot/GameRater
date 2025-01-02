@@ -6,6 +6,11 @@
   import NavBar from '../components/NavBar.vue';
   import GameTile from '../components/GameTile.vue';
 
+  import { library } from '@fortawesome/fontawesome-svg-core';
+  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+  import { faPlus, faDice, faDownload, faFire, faSkull} from '@fortawesome/free-solid-svg-icons';
+  library.add(faDice, faPlus, faDownload, faFire, faSkull);
+
   // Variables
   const authStore = useAuthStore();
   const token = ref(authStore.token);
@@ -49,7 +54,7 @@
     <h2 class="text-light py-2">Home</h2>
 
     <!-- Random games -->
-    <h5 class="text-light pb-1">Random Games</h5>
+    <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-dice" /> Random Games</h5>
     <div v-if="randomGames" class="row justify-content-start gx-2">
       <div v-for="game in randomGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2">
          <GameTile :name="game.name" 
@@ -70,7 +75,7 @@
     <!-- /Random games -->
 
     <!-- Recently added games -->
-    <h5 class="text-light pb-1">Recently Added Games</h5>
+    <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-plus" /> Recently Added Games</h5>
     <div v-if="recentlyAddedGames" class="row justify-content-start">
       <div v-for="game in recentlyAddedGames" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
         <GameTile :name="game.name" 
@@ -91,7 +96,7 @@
     <!-- /Recently added games -->
 
     <!-- Recently updated games -->
-    <h5 class="text-light pb-1">Recently Updated Games</h5>
+    <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-download" /> Recently Updated Games</h5>
     <div v-if="recentlyUpdatedGames" class="row justify-content-start">
       <div v-for="game in recentlyUpdatedGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
           <GameTile :name="game.name" 
@@ -112,7 +117,7 @@
     <!-- /Recently updated games -->
 
     <!-- Top games -->
-    <h5 class="text-light pb-1">Top Rated Games</h5>
+    <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-fire" /> Top Rated Games</h5>
     <div v-if="topGames" class="row justify-content-start">
       <div v-for="game in topGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
           <GameTile :name="game.name" 
@@ -133,7 +138,7 @@
     <!-- /Top games -->
 
     <!-- Recently updated games -->
-    <h5 class="text-light pb-1">Dead Games</h5>
+    <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-skull" /> Dead Games</h5>
     <div v-if="deadGames" class="row justify-content-start">
       <div v-for="game in deadGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
          <GameTile :name="game.name" 

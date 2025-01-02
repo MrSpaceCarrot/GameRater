@@ -97,7 +97,7 @@ class GameService():
         total_rating = 0
         number_ratings = 0
         for rating in game_ratings:
-            if rating.rating != 0:
+            if rating.rating not in [0, -1]:
                 number_ratings += 1
                 total_rating += rating.rating
 

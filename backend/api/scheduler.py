@@ -25,11 +25,11 @@ def start_scheduler():
 
         scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults)
 
-        scheduler.add_job(call_command, 'cron', args=['clear_expired_tokens'], minute=0, id='clear_expired_tokens_job')
-        scheduler.add_job(call_command, 'cron', args=['sort_tags'], minute=0, id='sort_tags_job')
+        scheduler.add_job(call_command, 'cron', args=['clear_expired_tokens'], minute=20, id='clear_expired_tokens_job')
+        scheduler.add_job(call_command, 'cron', args=['sort_tags'], minute=40, id='sort_tags_job')
         scheduler.add_job(call_command, 'cron', args=['update_average_ratings'], minute=0, id='update_average_ratings_job')
-        scheduler.add_job(call_command, 'cron', args=['update_banner_images'], minute='*/15', id='update_banner_images_job')
-        scheduler.add_job(call_command, 'cron', args=['update_last_updated'], minute='*/15', id='update_last_updated_job')
+        scheduler.add_job(call_command, 'cron', args=['update_banner_images'], minute='0,30', id='update_banner_images_job')
+        scheduler.add_job(call_command, 'cron', args=['update_last_updated'], minute='15,45', id='update_last_updated_job')
 
         scheduler.start()
         logger.info("Scheduler started.")
