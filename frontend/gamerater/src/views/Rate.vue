@@ -126,13 +126,14 @@
   onMounted(() => {
     // Get all games
     fetchFromAPI("/games/").then((data) => {allGames.value = data;})
-
-    // Get user ratings
-    fetchFromAPI("/ratings/user").then((data) => {userRatings.value = data;})
     .then(() => {
-      updateRatingTiles();
-      updateSort("Your Rating");
-    });
+      // Get user ratings
+      fetchFromAPI("/ratings/user").then((data) => {userRatings.value = data;})
+      .then(() => {
+        updateRatingTiles();
+        updateSort("Your Rating");
+      });
+    })    
   });
 </script>
 
