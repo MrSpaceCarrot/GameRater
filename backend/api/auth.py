@@ -38,6 +38,11 @@ class DiscordAuthBackend(BaseBackend):
         token.token = str(uuid.uuid4())
         token.save()
 
+        # Activate user if they are in whitelisted discord servers
+        if get_discord_user_guilds(access_token):
+            user.account_activated = True
+            user.save()
+
         # Return user and token
         return user, token.token
 
@@ -96,3 +101,19 @@ def get_discord_user_info(access_token):
     headers = {'Authorization': f"Bearer {access_token}"}
     response = requests.get("https://discord.com/api/v10/users/@me", headers=headers).json()
     return response
+
+def get_discord_user_guilds(access_token):
+    headers = {'Authorization': f"Bearer {access_token}"}
+    response = requests.get("https://discord.com/api/v10/users/@me/guilds", headers=headers).json()
+
+    discord_server_whitelist = config("DISCORD_SERVER_WHITELIST")
+    discord_server_whitelist = tuple(discord_server_whitelist.split(","))
+
+    match = False
+    for server in response:
+        for whitelisted_server in discord_server_whitelist:
+            if str(server['id']) == str(whitelisted_server):
+                match = True
+                break
+            
+    return match

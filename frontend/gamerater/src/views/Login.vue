@@ -17,7 +17,7 @@
   function loginWithDiscord() {
     const clientId = config.DISCORD_CLIENT_ID;
     const redirectUri = encodeURIComponent(config.LOGIN_REDIRECT_URL);
-    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify`;
+    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify+guilds`;
     window.location.href = discordAuthUrl;
   }
 </script>

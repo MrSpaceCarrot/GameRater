@@ -37,8 +37,7 @@
   let tagsWhitelist = ref([]);
 
   // Tagify
-  const tagify = ref(null);
-  let inputElement = ref(null);
+  const tagsTagify = ref(null);
 
   // Functions
   // Fetch data from api
@@ -56,7 +55,7 @@
     } else {
       // Collect tags
       let filteredTags = [];
-      for (let tag of tagify.value.value) {
+      for (let tag of tagsTagify.value.value) {
         filteredTags.push(tag.value);
       }
 
@@ -177,7 +176,7 @@
     filteredRating.value = 0.9;
     formattedFilteredRating.value = "Any";
     filteredSort.value = "Name";
-    tagify.value.removeAllTags();
+    tagsTagify.value.removeAllTags();
     filterGames();
   }
 
@@ -187,19 +186,17 @@
     // Get all games
     fetchFromAPI("/games/").then((data) => {allGames.value = data; filteredGames.value = data})
 
-    // Create tagify
-    inputElement = document.getElementById('gametags');
-    tagify.value = new Tagify(inputElement, {maxTags: 5, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
-
-    // Get and set whitelist for tagify
+    // Create tags tagify
+    let tagsInputElement = document.getElementById('gametags');
+    tagsTagify.value = new Tagify(tagsInputElement, {maxTags: 5, whitelist: [], enforceWhitelist: true, dropdown: {enabled: 1, maxItems: 50, enabled: 0, closeOnSelect: false}});
     apiClient.get("/games/tags/", {headers: {Authorization: `Token ${token.value}`}})
     .then((response) => {
       for(let tag of response.data) {tagsWhitelist.value.push(tag["tag"])}
-      tagify.value.whitelist = tagsWhitelist.value
+      tagsTagify.value.whitelist = tagsWhitelist.value
     })
     .catch((error) => {console.log(error)});
 
-    tagify.value.on('change', () => {
+    tagsTagify.value.on('change', () => {
       filterGames();
     });
     
@@ -220,7 +217,7 @@
         <p v-if="filteredGames">{{ filteredGames.length }} results found
         <span @click="clearFilters()" v-if="filteredName || 
                                             filteredPlatforms.length != 4 || 
-                                            tagify.value.length != 0 ||
+                                            tagsTagify.value.length != 0 ||
                                             filteredPartySize != 0 ||
                                             filteredRating != 0.9 ||
                                             filteredSort != 'Name'" 

@@ -20,6 +20,10 @@ p, li, h1, h2, h3, h4, h5, h6 {
   color: #fff;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Noto Sans";
+}
+
 .inline-svg {
     width: 1.1em;
     height: 1.1em;

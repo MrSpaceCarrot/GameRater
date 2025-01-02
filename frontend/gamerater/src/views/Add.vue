@@ -22,8 +22,8 @@
   const token = ref(authStore.token);
 
   // Form fields
-  let gamename = ref(null);
-  let gamelink = ref(null);
+  let gamename = ref("");
+  let gamelink = ref("");
   let gamebannerlink = ref("");
   let platform = ref("Roblox");
   let linkformat = ref("https://www.roblox.com/games/xxxxxxxxx");
@@ -71,9 +71,9 @@
 
   // Clear all fields of form
   function clearForm() {
-    gamename.value = '';
-    gamelink.value = '';
-    gamebannerlink.value = '';
+    gamename.value = "";
+    gamelink.value = "";
+    gamebannerlink.value = "";
     sliderValues.value = [1, 16];
     tagify.value.removeAllTags();
   }
@@ -98,9 +98,9 @@
     };
 
     // Form checking
-    if(data["name"] == null) { submissionmessage.value = "Name is required"; submissionmessagetype.value = "Error"; return;}
-    if(data["platform"] == '') { submissionmessage.value = "Platform is required"; submissionmessagetype.value = "Error"; return;}
-    if(data["link"] == null) { submissionmessage.value = "Link is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["name"] == "") { submissionmessage.value = "Name is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["platform"] == "") { submissionmessage.value = "Platform is required"; submissionmessagetype.value = "Error"; return;}
+    if(data["link"] == "") { submissionmessage.value = "Link is required"; submissionmessagetype.value = "Error"; return;}
     if(data["banner_link"] == null && data["platform"] == "Party" || data["banner_link"] == '' && data["platform"] == "Other") { submissionmessage.value = `Banner link is required for ${platform.value} games`;submissionmessagetype.value = "Error"; return;}
     if(data["min_party_size"] < 1 || data["max_party_size"] > 16) { submissionmessage.value = "Invalid party size"; submissionmessagetype.value = "Error"; return;}
     if(data["tags"].length < 2 || data["tags"] > 5) { submissionmessage.value = "Please choose between 2 and 5 tags"; submissionmessagetype.value = "Error"; return;}

@@ -12,7 +12,7 @@
                 <img src="/favicon.ico" alt="Site Logo" class="sitelogo">
             </router-link>
 
-            <router-link to="/" class="text-light navbar-brand" href="all"><h2>Derps Inc Gaming</h2></router-link>
+            <router-link to="/" class="text-light navbar-brand" href="all"><h2 class="mb-0">Derps Inc Gaming</h2></router-link>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

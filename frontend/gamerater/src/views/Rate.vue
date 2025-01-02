@@ -152,6 +152,9 @@
         <li><a @click="updateSort('Name')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-arrow-down-a-z" /> Name</a></li>
         <li><a @click="updateSort('Your Rating')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-star" /> Your Rating</a></li>
       </ul>
+      <p class="mt-2 mb-0"><font-awesome-icon icon="fa-solid fa-star" /> 1-10: You've played the game and have an opinion of it.</p>
+      <p class="mb-0"><font-awesome-icon icon="fa-solid fa-list" /> You haven't played the game yet but might later.</p>
+      <p class=""><font-awesome-icon icon="fa-solid fa-eye-slash" /> You haven't played the game and have no interest in doing so (or you don't own the game).</p>
     </div> 
 
     <div v-if="allGames" class="row">
@@ -185,7 +188,6 @@
             </div>
            
           </div>
-
         </div>
       </div>
     </div>
