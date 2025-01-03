@@ -1,6 +1,6 @@
 <script setup>
   // Libraries & Components
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, watch } from 'vue';
   import { useAuthStore } from '@/stores/AuthStore';
   import apiClient from '@/axios';
 
@@ -32,6 +32,7 @@
   // Form messages
   let submissionmessage = ref(null);
   let submissionmessagetype = ref(null);
+  let userCanAddGames = ref(null);
 
   // Form Slider
   let sliderValues = ref([1, 16]);
@@ -54,8 +55,10 @@
     platform.value = selectedPlatform;
 
     // Clear submission message
-    submissionmessage.value = '';
-    submissionmessagetype.value = '';
+    if (submissionmessage.value !== "Your account has not been approved to add games") {
+      submissionmessage.value = '';
+      submissionmessagetype.value = '';
+    }
 
     // Change link format depending on platform
     if (selectedPlatform == "Roblox") {
@@ -124,7 +127,14 @@
       submissionmessagetype.value = "Error";
       submissionloading.value = false; 
     });
-  } 
+  }
+
+  watch(userCanAddGames, (newValue, oldValue) => {
+    if (newValue == false) {
+      submissionmessagetype.value = "Error";
+      submissionmessage.value = "Your account has not been approved to add games";
+    }
+  });
 
   // Mounted
   onMounted(() => {
@@ -139,6 +149,12 @@
       tagify.value.whitelist = tags.value
     })
     .catch((error) => {console.log(error)});
+
+    // Check if user has permission to add games
+    apiClient.get("/users/currentuser", {headers: {Authorization: `Token ${token.value}`}})
+    .then((response) => {
+      userCanAddGames.value = response.data.can_add_games;
+    })
   });
 </script>
 
@@ -230,7 +246,7 @@
         <!-- /Game Tags-->
         <!-- /Entry fields-->
         
-        <button type="submit" class="btn btn-primary" :class="{ disabled: submissionloading }">
+        <button type="submit" class="btn btn-primary" :class="{ disabled: submissionloading || !userCanAddGames }">
           Add Game
           <span v-if="submissionloading===true" class="spinner-border spinner-border-sm"></span>
         </button>

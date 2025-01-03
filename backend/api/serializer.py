@@ -53,6 +53,12 @@ class GameSerializer(serializers.ModelSerializer):
         link = data.get("link")
         banner_link = data.get("banner_link")
 
+        # Ensure added by is set
+        request_user = get_user_from_auth_header(self.context)
+        if request_user.can_add_games == False:
+            raise serializers.ValidationError({"Permission error": f"Your account has not been approved to add games"})
+        data["added_by"] = request_user
+
         # Ensure game is unique
         if Game.objects.filter(name=name).exists():
             raise serializers.ValidationError({"duplicate": "This game has already been added"})
@@ -73,10 +79,6 @@ class GameSerializer(serializers.ModelSerializer):
             data["last_updated"] = game_service.get_last_updated(platform, link)
             if not data["last_updated"]:
                 raise serializers.ValidationError({"last_updated": f"Failed to retrieve from {platform} API. Link is invalid"})
-            
-        # Ensure added by is set
-        request_user = get_user_from_auth_header(self.context)
-        data["added_by"] = request_user
 
         # Check user has permissions
         if self.instance:

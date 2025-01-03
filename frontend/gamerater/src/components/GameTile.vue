@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="mb-3">
-            <p>
+            <p class="px-1 pb-1">
             <span v-if="platform === 'Roblox'" class="badge bg-danger">Roblox <img src="/roblox.svg" alt="Roblox Logo" class="inline-svg"></span>
             <span v-else-if="platform ==='Steam'" class="badge badge-steam">Steam <font-awesome-icon icon="fa-brands fa-steam" /></span>
             <span v-else-if="platform ==='Party'" class="badge badge-party">Party <font-awesome-icon icon="fa-solid fa-box-open" /></span>
@@ -77,7 +77,7 @@
             <span v-if="minPartySize && maxPartySize" class="badge bg-primary"><font-awesome-icon icon="fa-solid fa-user-group" /> {{ formatPartySize(minPartySize, maxPartySize) }}</span>
             <span v-if="Number.isInteger(installSize)" class="badge bg-info"><font-awesome-icon icon="fa-solid fa-hard-drive" /> {{ formatInstallSize(installSize) }}</span>
             <span v-if="date" class="badge bg-success">{{ dateText }} {{ formatDate(date) }}</span>
-            <span v-if="averageRating" class="badge bg-warning"><font-awesome-icon icon="fa-solid fa-star" /> {{ averageRating }}</span>
+            <span v-if="averageRating" class="badge bg-warning"><font-awesome-icon icon="fa-solid fa-star" /> {{ averageRating.toFixed(1) }}</span>
 
             <span v-for="tag in tags" class="badge bg-light text-dark fw-bolder">{{ tag }}</span>
             </p>
