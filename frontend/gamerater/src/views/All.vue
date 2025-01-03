@@ -313,8 +313,9 @@
 
       <div class="col-12 col-md-10">
         <div v-if="filteredGames" class="row justify-content-start gx-2">
-          <div v-for="game in filteredGames" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <GameTile :name="game.name" 
+          <div v-for="game in filteredGames" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-3">
+            <GameTile class="h-100"
+                        :name="game.name" 
                         :platform="game.platform" 
                         :install-size="game.install_size"
                         :link="game.link" 
