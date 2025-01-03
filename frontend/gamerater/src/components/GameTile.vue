@@ -67,8 +67,8 @@
                 <p class="text-light pt-1 mb-1">{{ name }}</p>
             </div>
         </div>
-        <div class="mb-3">
-            <p class="px-1 pb-1">
+        <div class="">
+            <div class="px-1 pb-1">
             <span v-if="platform === 'Roblox'" class="badge bg-danger">Roblox <img src="/roblox.svg" alt="Roblox Logo" class="inline-svg"></span>
             <span v-else-if="platform ==='Steam'" class="badge badge-steam">Steam <font-awesome-icon icon="fa-brands fa-steam" /></span>
             <span v-else-if="platform ==='Party'" class="badge badge-party">Party <font-awesome-icon icon="fa-solid fa-box-open" /></span>
@@ -80,7 +80,7 @@
             <span v-if="averageRating" class="badge bg-warning"><font-awesome-icon icon="fa-solid fa-star" /> {{ averageRating.toFixed(1) }}</span>
 
             <span v-for="tag in tags" class="badge bg-light text-dark fw-bolder">{{ tag }}</span>
-            </p>
+            </div>
         </div>
     </div>
 </template>

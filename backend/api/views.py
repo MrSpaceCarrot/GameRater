@@ -57,7 +57,7 @@ def deadgames(request):
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def randomgames(request):
-    games = Game.objects.all().order_by('?')[:6]
+    games = Game.objects.all().order_by('?')[:12]
     serializer = GameSerializer(games, many=True)
     return Response(serializer.data)
 
