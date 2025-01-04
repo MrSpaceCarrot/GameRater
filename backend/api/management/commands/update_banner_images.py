@@ -8,6 +8,6 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         service = GameService()
         logger = logging.getLogger("services")
-        logger.info("Starting to update banner images")
+        logger.info("Starting to update banner images...")
         kept, updated, exceptions = service.update_banner_images()
         logger.info(f"Finished updating banner images, Images kept: {kept}, Images updated: {updated}, Images excepted: {exceptions}")

@@ -8,8 +8,8 @@
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { faSteam } from '@fortawesome/free-brands-svg-icons';
   import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
-  import { faBoxOpen, faGamepad, faMagnifyingGlass, faTag, faUserGroup, faStar, faArrowDownAZ, faPlus, faDownload } from '@fortawesome/free-solid-svg-icons';
-  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faTag, faMagnifyingGlass, faStar, faCircleXmark, faArrowDownAZ, faPlus, faDownload);
+  import { faBoxOpen, faGamepad, faMagnifyingGlass, faTag, faUserGroup, faStar, faArrowDownAZ, faPlus, faDownload, faFire } from '@fortawesome/free-solid-svg-icons';
+  library.add(faSteam, faBoxOpen, faGamepad, faUserGroup, faTag, faMagnifyingGlass, faStar, faCircleXmark, faArrowDownAZ, faPlus, faDownload, faFire);
 
   import VueSlider from 'vue-slider-component'
   import 'vue-slider-component/theme/default.css'
@@ -110,8 +110,10 @@
       });
 
       // Sort filtered games
-      if (filteredSort.value === "Top User Rated") {
+      if (filteredSort.value === "Average Rating") {
         filteredGames.value.sort((a, b) => b.average_rating - a.average_rating);
+      } else if (filteredSort.value == "Popularity Score") {
+        filteredGames.value.sort((a, b) => b.popularity_score - a.popularity_score);
       } else if (filteredSort.value === "Date Added") {
         filteredGames.value.sort((a, b) => new Date(b.date_added) - new Date(a.date_added));
       } else if (filteredSort.value === "Last Updated") {
@@ -208,7 +210,6 @@
   <div class="container-fluid">
     
     <h2 class="text-light py-2">All Games</h2>
-    
 
     <div class="row">
 
@@ -231,14 +232,16 @@
           <button type="button" class="btn btn-secondary dropdown-toggle w-100 text-start" data-bs-toggle="dropdown">
             Sort by: 
             <font-awesome-icon v-if="filteredSort==='Name'" icon="fa-solid fa-arrow-down-a-z" />
-            <font-awesome-icon v-if="filteredSort==='Top User Rated'" icon="fa-solid fa-star" />
+            <font-awesome-icon v-if="filteredSort==='Popularity Score'" icon="fa-solid fa-fire" />
+            <font-awesome-icon v-if="filteredSort==='Average Rating'" icon="fa-solid fa-star" />
             <font-awesome-icon v-if="filteredSort==='Date Added'" icon="fa-solid fa-plus" />
             <font-awesome-icon v-if="filteredSort==='Last Updated'" icon="fa-solid fa-download" />
             {{ filteredSort}}
           </button>
           <ul class="dropdown-menu w-100 bg-secondary">
             <li><a @click="updateSort('Name')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-arrow-down-a-z" /> Name</a></li>
-            <li><a @click="updateSort('Top User Rated')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-star" /> Top User Rated</a></li>
+            <li><a @click="updateSort('Popularity Score')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-fire" /> Popularity Score</a></li>
+            <li><a @click="updateSort('Average Rating')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-star" /> Average Rating</a></li>
             <li><a @click="updateSort('Date Added')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-plus"/> Date Added</a></li>
             <li><a @click="updateSort('Last Updated')" class="dropdown-item bg-secondary"><font-awesome-icon icon="fa-solid fa-download" /> Last Updated</a></li>
           </ul>
@@ -314,7 +317,8 @@
       <div class="col-12 col-md-10">
         <div v-if="filteredGames" class="row justify-content-start gx-2">
           <div v-for="game in filteredGames" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-            <GameTile :name="game.name" 
+            <GameTile   v-if="filteredSort==='Average Rating'"
+                        :name="game.name" 
                         :platform="game.platform" 
                         :install-size="game.install_size"
                         :link="game.link" 
@@ -325,6 +329,19 @@
                         :min-party-size="game.min_party_size" 
                         :max-party-size="game.max_party_size"
                         :average-rating="game.average_rating"
+                />
+            <GameTile   v-else
+                        :name="game.name" 
+                        :platform="game.platform" 
+                        :install-size="game.install_size"
+                        :link="game.link" 
+                        :banner-link="game.banner_link" 
+                        :date="game.last_updated"
+                        date-text="Updated"
+                        :tags="game.tags"
+                        :min-party-size="game.min_party_size" 
+                        :max-party-size="game.max_party_size"
+                        :popularity-score="game.popularity_score"
                 />
           </div>
         </div>

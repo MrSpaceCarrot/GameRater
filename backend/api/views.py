@@ -67,7 +67,7 @@ def randomgames(request):
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def topgames(request):
-    games = Game.objects.all().order_by('-average_rating')[:6]
+    games = Game.objects.all().order_by('-popularity_score')[:6]
     serializer = GameSerializer(games, many=True)
     return Response(serializer.data)
 
@@ -142,6 +142,7 @@ def add_rating(request):
         rating = serializer.save()
         service = GameService()
         service.update_average_rating(rating.game_id)
+        service.update_popularity_score(rating.game_id)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

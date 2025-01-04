@@ -104,7 +104,7 @@ class GameService():
         # Update game average rating
         game = Game.objects.get(id=game_id)
         try:
-            new_average_rating = total_rating / number_ratings
+            new_average_rating = round((total_rating / number_ratings), 2)
             if new_average_rating != game.average_rating:
                 self.logger.debug(f"Updating average rating for {game.name} from {game.average_rating} to {new_average_rating}")
                 game.average_rating = new_average_rating
@@ -114,6 +114,21 @@ class GameService():
             game.average_rating = None
             self.logger.debug(f"Updating average rating for {game.name} to None")
         game.save()
+
+    # Update popularity score for game
+    def update_popularity_score(self, game_id):
+        game = Game.objects.get(id=game_id)
+        people_rated = Rating.objects.filter(game_id=game_id, rating__gt=0).count()
+        people_total = int(config("PEOPLE_CONSTANT"))
+        new_popularity_score = round(min(1, (game.average_rating) * 0.12 * (people_rated / people_total)), 4)
+
+        if new_popularity_score != game.popularity_score:
+            self.logger.debug(f"Updating popularity score for {game.name} from {game.popularity_score} to {new_popularity_score}")
+            game.popularity_score = new_popularity_score
+        else:
+            self.logger.debug(f"Keeping popularity score for {game.name} at {game.popularity_score}")
+        game.save()
+
 
     # Update banner images for all games
     def update_banner_images(self) -> Tuple[int, int, int]:
@@ -179,6 +194,12 @@ class GameService():
         games = Game.objects.all()
         for game in games:
             self.update_average_rating(game.id)
+
+    # Update popularity score for all games
+    def update_popularity_scores(self):
+        games = Game.objects.all()
+        for game in games:
+            self.update_popularity_score(game.id)
 
     # Sort tags alphabetically for all games
     def sort_tags(self) -> Tuple[int, int]:

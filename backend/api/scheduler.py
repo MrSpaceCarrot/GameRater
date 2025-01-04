@@ -29,6 +29,7 @@ def start_scheduler():
         scheduler.add_job(call_command, 'cron', args=['sort_tags'], minute=40, id='sort_tags_job')
         scheduler.add_job(call_command, 'cron', args=['update_average_ratings'], minute=0, id='update_average_ratings_job')
         scheduler.add_job(call_command, 'cron', args=['update_banner_images'], minute='0,30', id='update_banner_images_job')
+        scheduler.add_job(call_command, 'cron', args=['update_popularity_scores'], minute=5, id='update_popularity_scores_job')
         scheduler.add_job(call_command, 'cron', args=['update_last_updated'], minute='15,45', id='update_last_updated_job')
 
         scheduler.start()
