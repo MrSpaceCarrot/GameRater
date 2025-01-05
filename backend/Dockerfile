@@ -1,15 +1,15 @@
-FROM python:3.11-slim
+FROM python:3.11-alpine
 
 WORKDIR /app
 
 RUN apk add --no-cache \
-    bash gcc libpq-dev musl-dev && \
-    apk add --no-cache --virtual .build-deps gcc libpq-dev musl-dev && \
-    apk del .build-deps
+    bash \
+    gcc \
+    musl-dev \
+    mariadb-connector-c-dev \
+    && python -m pip install --no-cache-dir --upgrade pip setuptools
 
 RUN addgroup -S gameratergroup && adduser -S gamerateruser -G gameratergroup
-
-RUN python -m pip install --no-cache-dir --upgrade pip setuptools
 
 COPY requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
