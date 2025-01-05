@@ -330,7 +330,7 @@
                         :max-party-size="game.max_party_size"
                         :average-rating="game.average_rating"
                 />
-            <GameTile   v-if="filteredSort==='Date Added'"
+            <GameTile   v-else-if="filteredSort==='Date Added'"
                         :name="game.name" 
                         :platform="game.platform" 
                         :install-size="game.install_size"
