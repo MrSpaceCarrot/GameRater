@@ -28,4 +28,4 @@ EXPOSE 15001
 ENV TERM=xterm
 ENV PYTHONDONTWRITEBYTECODE=1
 
-CMD ["bash", "-c", "celery -A gamerater worker --loglevel=info & celery -A gamerater beat --loglevel=info & gunicorn --bind 0.0.0.0:15001 --workers 1 gamerater.wsgi:application"]
+CMD ["bash", "-c", "celery -A gamerater worker --concurrency=2 --loglevel=info & celery -A gamerater beat --loglevel=info & gunicorn --bind 0.0.0.0:15001 --workers 1 gamerater.wsgi:application"]
