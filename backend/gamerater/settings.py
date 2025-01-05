@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -141,7 +143,7 @@ CORS_ORIGIN_WHITELIST = tuple(CORS_ORIGIN_WHITELIST_IMPORT.split(","))
 CORS_ALLOW_METHODS = [
     "GET",
     "POST",
-    "OPTIONS",  # Ensure OPTIONS requests are allowed
+    "OPTIONS",
 ]
 
 # Authentication
@@ -164,7 +166,9 @@ REST_FRAMEWORK = {
 # Logging
 DJANGO_LOG_LEVEL = config("DJANGO_LOG_LEVEL")
 SERVICES_LOG_LEVEL = config("SERVICES_LOG_LEVEL")
-SCHEDULER_LOG_LEVEL = config("SCHEDULER_LOG_LEVEL")
+MYSQL_LOG_LEVEL = config("MYSQL_LOG_LEVEL")
+CELERY_WORKER_LOG_LEVEL = config("CELERY_WORKER_LOG_LEVEL")
+CELERY_BEAT_LOG_LEVEL = config("CELERY_BEAT_LOG_LEVEL")
 
 LOGGING = {
     'version': 1,
@@ -187,7 +191,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'logs', 'application.log'),
             'backupCount': 5,
-            'maxBytes': 100000,
+            'maxBytes': 10000000,
             'formatter': 'verbose',
         },
     },
@@ -207,10 +211,27 @@ LOGGING = {
             'level': SERVICES_LOG_LEVEL,
             'propagate': False,
         },
-        'apscheduler': {
+        'mysql.connector': {
+            'level': MYSQL_LOG_LEVEL,
             'handlers': ['console', 'logfile'],
-            'level': SCHEDULER_LOG_LEVEL,
+            'propagate': False,
+        },
+        'celery': {
+            'level': CELERY_WORKER_LOG_LEVEL,
+            'handlers': ['console', 'logfile'],
+            'propagate': False,
+        },
+        'celery.beat': {
+            'level': CELERY_BEAT_LOG_LEVEL,
+            'handlers': ['console', 'logfile'],
             'propagate': False,
         },
     },
 }
+
+CELERY_BROKER_URL = f'sqla+mysql://{config("DB_USER")}:{config("DB_PASSWORD")}@{config("DB_HOST")}:{config("DB_PORT")}/{config("DB_NAME")}'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+CELERY_TASK_ACKS_LATE = True

@@ -8,8 +8,8 @@
 
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import { faPlus, faDice, faDownload, faStar, faSkull} from '@fortawesome/free-solid-svg-icons';
-  library.add(faDice, faPlus, faDownload, faStar, faSkull);
+  import { faPlus, faDice, faDownload, faStar, faSkull, faFire} from '@fortawesome/free-solid-svg-icons';
+  library.add(faDice, faPlus, faDownload, faStar, faSkull, faFire);
 
   // Variables
   const authStore = useAuthStore();
@@ -117,7 +117,7 @@
     <!-- /Recently updated games -->
 
     <!-- Top games -->
-    <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-star" /> Most Popular Games</h5>
+    <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-fire" /> Most Popular Games</h5>
     <div v-if="topGames" class="row justify-content-start">
       <div v-for="game in topGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
           <GameTile :name="game.name" 

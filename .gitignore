@@ -238,3 +238,5 @@ coverage
 .env.local
 frontend-config.json
 frontend/gamerater/public/config.json
+
+celerybeat*
