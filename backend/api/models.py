@@ -1,10 +1,15 @@
 from django.db import models
 from django.utils import timezone
 from datetime import datetime, timedelta
+from minio_storage.storage import MinioMediaStorage
 
 # Add one week for tokens
 def add_one_week():
     return timezone.now() + timedelta(weeks=1)
+
+# Format filename for banner images
+def format_banner_filename(instance, filename):
+    return f"banner_images/{filename}"
 
 # Create your models here.
 
@@ -16,12 +21,13 @@ class Game(models.Model):
     install_size = models.SmallIntegerField(default=None, null=True)
     link = models.CharField(max_length=300, default=None)
     banner_link = models.CharField(max_length=300, default=None)
+    banner_image = models.ImageField(storage=MinioMediaStorage(), upload_to=format_banner_filename, default=None, null=True)
     min_party_size = models.SmallIntegerField(default=None)
     max_party_size = models.SmallIntegerField(default=None)
     tags = models.JSONField(default=None)
     last_updated = models.DateTimeField("Last Updated", default=None, null=True)
     date_added = models.DateTimeField("Date added", default=timezone.now)
-    added_by = models.ForeignKey("DiscordUser", on_delete=models.SET_NULL, related_name="gamesadded", default=None, null=True)
+    added_by = models.ForeignKey("DiscordUser", on_delete=models.SET_NULL, related_name="gamesadded", default=None, null=True, blank=True)
     update_banner_link = models.BooleanField(default=True)
     average_rating = models.FloatField(default=None, null=True)
     popularity_score = models.FloatField(default=None, null=True)

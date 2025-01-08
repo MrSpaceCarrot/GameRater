@@ -2,11 +2,20 @@ from rest_framework import serializers
 from .models import Game, Tag, Rating, AuthToken, DiscordUser, Tag
 from .services import GameService, get_user_from_auth_header
 from rest_framework.authentication import get_authorization_header
+from django.templatetags.static import static
+import os
 
 class GameSerializer(serializers.ModelSerializer):
+    
+    banner_image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Game
         fields = '__all__'
+        fields = ['id', 'name', 'platform', 'install_size', 'link', 'banner_link', 
+                  'banner_image_url', 'min_party_size', 'max_party_size', 'tags', 
+                  'last_updated', 'date_added', 'added_by', 'update_banner_link', 
+                  'average_rating', 'popularity_score']
         read_only_fields = ['added_by']
 
     name = serializers.CharField(required=True, max_length=100)
@@ -16,6 +25,16 @@ class GameSerializer(serializers.ModelSerializer):
     min_party_size = serializers.IntegerField(required=True)
     max_party_size = serializers.IntegerField(required=True)
     tags = serializers.JSONField(required=True)
+
+    def get_banner_image_url(self, obj):
+        request = self.context.get('request')
+
+        if not obj.banner_image:
+            return request.build_absolute_uri(static('banner_placeholder.png'))
+        try:
+            return request.build_absolute_uri(obj.banner_image.url)
+        except Exception:
+            return request.build_absolute_uri(static('banner_placeholder.png'))
 
     def validate_platform(self, platform):
         if platform not in ["Roblox", "Steam", "Party", "Other"]:
@@ -54,7 +73,7 @@ class GameSerializer(serializers.ModelSerializer):
         banner_link = data.get("banner_link")
 
         # Ensure added by is set
-        request_user = get_user_from_auth_header(self.context)
+        request_user = get_user_from_auth_header(self.context.get('request'))
         if request_user.can_add_games == False:
             raise serializers.ValidationError({"Permission error": f"Your account has not been approved to add games"})
         data["added_by"] = request_user
@@ -73,7 +92,7 @@ class GameSerializer(serializers.ModelSerializer):
             data["banner_link"] = game_service.get_banner_link(platform, link)
             if not data["banner_link"]:
                 raise serializers.ValidationError({"banner_link": f"Failed to retrieve from {platform} API. Link is invalid"})
-            
+
         # Ensure last updated is set
         if platform == "Roblox":
             data["last_updated"] = game_service.get_last_updated(platform, link)
@@ -87,6 +106,16 @@ class GameSerializer(serializers.ModelSerializer):
              
         return data
     
+    def create(self, validated_data):
+        banner_link = validated_data.get('banner_link')
+
+        service = GameService()
+        instance = Game.objects.create(**validated_data)
+        instance.banner_image = service.get_banner_image(instance.id, banner_link)
+        instance.save()
+
+        return instance
+
 
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -102,7 +131,7 @@ class RatingSerializer(serializers.ModelSerializer):
         return rating
     
     def create(self, validated_data):
-        request_user = get_user_from_auth_header(self.context)
+        request_user = get_user_from_auth_header(self.context.get('request'))
         request_game = validated_data["game"]
         request_rating = validated_data["rating"]
 

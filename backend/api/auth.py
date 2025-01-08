@@ -72,7 +72,7 @@ class DiscordTokenAuthentication(BaseAuthentication):
             raise AuthenticationFailed("Expired token")
         
         # Check that the user is activated
-        user = get_user_from_auth_header(header)
+        user = get_user_from_auth_header(request)
         if(not user.account_activated):
             raise AuthenticationFailed("Account has not been activated")
 

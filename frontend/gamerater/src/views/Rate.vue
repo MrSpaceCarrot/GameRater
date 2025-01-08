@@ -166,7 +166,7 @@
           <div class="col-12 col-md-4 d-flex align-items-center justify-content-start">
             <div class="aspect-ratio-box">
               <a :href="game.link" target="_blank">
-                <img :src="game.banner_link" :alt="`${game.name} banner image`" class="img-fluid aspect-ratio-content rounded">
+                <img :src="game.banner_image_url" :alt="`${game.name} banner image`" class="img-fluid aspect-ratio-content rounded">
               </a>
             </div>
             <span class="px-3">{{ game.name }}</span>

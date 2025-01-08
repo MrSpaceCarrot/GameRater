@@ -240,3 +240,5 @@ frontend-config.json
 frontend/gamerater/public/config.json
 
 celerybeat*
+backend/media
+media/banner_images/*

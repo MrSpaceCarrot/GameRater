@@ -8,8 +8,8 @@
 
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-  import { faPlus, faDice, faDownload, faStar, faSkull, faFire} from '@fortawesome/free-solid-svg-icons';
-  library.add(faDice, faPlus, faDownload, faStar, faSkull, faFire);
+  import { faPlus, faDice, faDownload, faStar, faSkull, faFire, faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+  library.add(faDice, faPlus, faDownload, faStar, faSkull, faFire, faChevronLeft, faChevronRight);
 
   // Variables
   const authStore = useAuthStore();
@@ -55,20 +55,20 @@
 
     <!-- Random games -->
     <h5 class="text-light pb-1"><font-awesome-icon icon="fa-solid fa-dice" /> Random Games</h5>
-    <div v-if="randomGames" class="row justify-content-start gx-2">
-      <div v-for="game in randomGames" :key="game.id" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2">
-         <GameTile :name="game.name" 
-                    :platform="game.platform"
-                    :install-size="game.install_size"
-                    :link="game.link" 
-                    :banner-link="game.banner_link" 
-                    :date="game.last_updated"
-                    date-text="Updated"
-                    :tags="game.tags"
-                    :min-party-size="game.min_party_size" 
-                    :max-party-size="game.max_party_size"
-                    :popularity-score="game.popularity_score"
-            />
+    <div v-if="randomGames" class="row justify-content-start">
+      <div v-for="game in randomGames" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-2 gx-2">
+        <GameTile :name="game.name" 
+                  :platform="game.platform"
+                  :install-size="game.install_size"
+                  :link="game.link" 
+                  :banner-link="game.banner_image_url" 
+                  :date="game.last_updated"
+                  date-text="Updated"
+                  :tags="game.tags"
+                  :min-party-size="game.min_party_size" 
+                  :max-party-size="game.max_party_size"
+                  :popularity-score="game.popularity_score"
+          />
       </div>
     </div>
     <p v-else>Loading...</p>
@@ -82,7 +82,7 @@
                   :platform="game.platform"
                   :install-size="game.install_size"
                   :link="game.link" 
-                  :banner-link="game.banner_link" 
+                  :banner-link="game.banner_image_url" 
                   :date="game.date_added"
                   date-text="Added"
                   :tags="game.tags"
@@ -103,7 +103,7 @@
                     :platform="game.platform"
                     :install-size="game.install_size"
                     :link="game.link" 
-                    :banner-link="game.banner_link" 
+                    :banner-link="game.banner_image_url" 
                     :date="game.last_updated"
                     date-text="Updated"
                     :tags="game.tags"
@@ -124,7 +124,7 @@
                     :platform="game.platform"
                     :install-size="game.install_size"
                     :link="game.link" 
-                    :banner-link="game.banner_link" 
+                    :banner-link="game.banner_image_url" 
                     :date="game.last_updated"
                     date-text="Updated"
                     :tags="game.tags"
@@ -145,7 +145,7 @@
                     :platform="game.platform"
                     :install-size="game.install_size"
                     :link="game.link" 
-                    :banner-link="game.banner_link" 
+                    :banner-link="game.banner_image_url" 
                     :date="game.last_updated"
                     date-text="Updated"
                     :tags="game.tags"

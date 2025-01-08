@@ -18,7 +18,7 @@ from django_ratelimit.decorators import ratelimit
 @ratelimit(key='ip', rate='60/m', block=True)
 def games(request):
     games = Game.objects.all().order_by('name')
-    serializer = GameSerializer(games, many=True)
+    serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
 # Get 6 most recently added games
@@ -28,7 +28,7 @@ def games(request):
 @ratelimit(key='ip', rate='60/m', block=True)
 def recentlyaddedgames(request):
     games = Game.objects.all().order_by('-date_added')[:6]
-    serializer = GameSerializer(games, many=True)
+    serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
 # Get 6 most recently updated games
@@ -38,7 +38,7 @@ def recentlyaddedgames(request):
 @ratelimit(key='ip', rate='60/m', block=True)
 def recentlyupdatedgames(request):
     games = Game.objects.filter(last_updated__isnull=False).order_by('-last_updated')[:6]
-    serializer = GameSerializer(games, many=True)
+    serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
 # Get 6 games which have not recieved updates the longest
@@ -48,7 +48,7 @@ def recentlyupdatedgames(request):
 @ratelimit(key='ip', rate='60/m', block=True)
 def deadgames(request):
     games = Game.objects.filter(last_updated__isnull=False).order_by('last_updated')[:6]
-    serializer = GameSerializer(games, many=True)
+    serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
 # Get 6 random games
@@ -58,7 +58,7 @@ def deadgames(request):
 @ratelimit(key='ip', rate='60/m', block=True)
 def randomgames(request):
     games = Game.objects.all().order_by('?')[:6]
-    serializer = GameSerializer(games, many=True)
+    serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
 # Get 6 highest rated games
@@ -68,7 +68,7 @@ def randomgames(request):
 @ratelimit(key='ip', rate='60/m', block=True)
 def topgames(request):
     games = Game.objects.all().order_by('-popularity_score')[:6]
-    serializer = GameSerializer(games, many=True)
+    serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
 # Get game tags list
@@ -87,7 +87,7 @@ def tags(request):
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def add_game(request):
-    serializer = GameSerializer(data=request.data, context=request.headers['Authorization'])
+    serializer = GameSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -107,12 +107,12 @@ def game(request, pk):
     
     # Get game
     if request.method == "GET":
-        serializer = GameSerializer(game)
+        serializer = GameSerializer(game, context={'request': request})
         return Response(serializer.data)
     
     # Update game
     elif request.method == "PATCH":
-        serializer = GameSerializer(game, data=request.data, context=request.headers['Authorization'], partial=True)
+        serializer = GameSerializer(game, data=request.data, context={'request': request}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -122,7 +122,7 @@ def game(request, pk):
     elif request.method == "DELETE":
         # Check permissions
         game_added_by = game.added_by
-        user_object = get_user_from_auth_header(request.headers.get('Authorization'))
+        user_object = get_user_from_auth_header(request)
         if user_object.id != game_added_by.id:
             return Response({"error": "You do not have permission to delete this resource"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -137,7 +137,7 @@ def game(request, pk):
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def add_rating(request):
-    serializer = RatingSerializer(data=request.data, context=request.headers['Authorization'])
+    serializer = RatingSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         rating = serializer.save()
         service = GameService()
@@ -152,7 +152,7 @@ def add_rating(request):
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def user_ratings(request):
-    games = Rating.objects.filter(user=get_user_from_auth_header(request.headers.get('Authorization')))
+    games = Rating.objects.filter(user=get_user_from_auth_header(request))
     serializer = RatingSerializer(games, many=True)
     return Response(serializer.data)
 
@@ -199,7 +199,7 @@ def logout(request):
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def logoutall(request):
-    user_object = get_user_from_auth_header(request.headers.get('Authorization'))
+    user_object = get_user_from_auth_header(request)
     token_objects = AuthToken.objects.filter(user_id=user_object)
     for token_object in token_objects:
         token_object.delete()
@@ -212,7 +212,7 @@ def logoutall(request):
 @ratelimit(key='ip', rate='60/m', block=True)
 def current_user(request):
     # Get current user
-    user_object = get_user_from_auth_header(request.headers.get('Authorization'))
+    user_object = get_user_from_auth_header(request)
     
     # Return object
     serializer = DiscordUserSerializer(user_object)

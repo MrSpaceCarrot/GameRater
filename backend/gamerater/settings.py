@@ -46,17 +46,21 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_celery_beat',
     'django_celery_results',
+    'django_cleanup.apps.CleanupConfig',
+    'whitenoise.runserver_nostatic',
+    'minio_storage',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',   
 ]
 
 ROOT_URLCONF = 'gamerater.urls'
@@ -124,12 +128,34 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Files Config / Minio
+# General
+MINIO_STORAGE_ENDPOINT = config("STORAGE_BUCKET_ENDPOINT")
+MINIO_STORAGE_ACCESS_KEY = config("STORAGE_BUCKET_ACCESS_KEY")
+MINIO_STORAGE_SECRET_KEY = config("STORAGE_BUCKET_SECRET_KEY")
+MINIO_STORAGE_USE_HTTPS = (os.getenv('STORAGE_BUCKET_USE_HTTPS', 'False') == 'True')
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# Media
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+MINIO_STORAGE_MEDIA_BUCKET_NAME = config("STORAGE_BUCKET_NAME")
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_AUTO_CREATE_MEDIA_POLICY = "READ_ONLY"
+MINIO_STORAGE_MEDIA_OBJECT_METADATA = {"Cache-Control": f"max-age={config('STORAGE_BUCKET_CACHE_TIMEOUT')}"}
+MINIO_STORAGE_MEDIA_URL = f"{config('STORAGE_BUCKET_MEDIA_URL')}/{MINIO_STORAGE_MEDIA_BUCKET_NAME}"
 
+if MINIO_STORAGE_USE_HTTPS:
+    MEDIA_URL = f"https://{MINIO_STORAGE_ENDPOINT}/{MINIO_STORAGE_MEDIA_BUCKET_NAME}/"
+else:
+    MEDIA_URL = f"http://{MINIO_STORAGE_ENDPOINT}/{MINIO_STORAGE_MEDIA_BUCKET_NAME}/"
+
+# Static
+STATIC_ROOT = '/app/staticfiles'
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, config('DJANGO_STATICFILES_DIRS'))]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
+WHITENOISE_AUTOREFRESH = False
+WHITENOISE_MAX_AGE = 60
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -151,6 +177,9 @@ AUTHENTICATION_BACKENDS = [
     'api.auth.DiscordAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -229,6 +258,7 @@ LOGGING = {
     },
 }
 
+# Celery
 CELERY_BROKER_URL = f'sqla+mysql://{config("DB_USER")}:{config("DB_PASSWORD")}@{config("DB_HOST")}:{config("DB_PORT")}/{config("DB_NAME")}'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']

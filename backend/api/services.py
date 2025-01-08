@@ -5,8 +5,12 @@ import time
 from .models import Game, DiscordUser, AuthToken, Rating
 from datetime import datetime
 from django.utils import timezone
+from django.core.files.base import ContentFile
 import logging
 from typing import Tuple, Union
+from PIL import Image
+from io import BytesIO
+from uuid import uuid4
 
 # Handle logic for games
 class GameService():
@@ -29,7 +33,7 @@ class GameService():
             return
         return [universe_id_data[0]["universeId"], session]
         
-    # Set banner art for game
+    # Get banner link for game
     def get_banner_link(self, platform, link):
         match platform:
             # Roblox Games
@@ -64,7 +68,7 @@ class GameService():
         # Return link
         return banner_link
     
-    # Set last updated
+    # Get last updated
     def get_last_updated(self, platform, link):
         match platform:
             # Roblox Games
@@ -90,7 +94,50 @@ class GameService():
         # Return date updated
         return last_updated
     
-    # Update average rating for game
+    # Get banner image binary from banner link
+    def get_banner_image(self, game_id, banner_link):
+        # Try open image from banner link
+        try:
+            response = requests.get(banner_link)
+            img = Image.open(BytesIO(response.content))
+
+            # Resize and crop image
+            width, height = img.size
+            scale_factor = max(int(config("BANNER_IMAGE_WIDTH")) / width, int(config("BANNER_IMAGE_HEIGHT")) / height)
+            new_width = int(width * scale_factor)
+            new_height = int(height * scale_factor)
+            img = img.resize((new_width, new_height))
+
+            left = (new_width - int(config("BANNER_IMAGE_WIDTH"))) // 2
+            top = (new_height - int(config("BANNER_IMAGE_HEIGHT"))) // 2
+            right = (new_width + int(config("BANNER_IMAGE_WIDTH"))) // 2
+            bottom = (new_height + int(config("BANNER_IMAGE_HEIGHT"))) // 2
+            img = img.crop((left, top, right, bottom))
+
+            # Return contentfile
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            buffer.seek(0)
+            content_file = ContentFile(buffer.getvalue(), name=f"{game_id}.png")
+            return content_file
+        except Exception:
+            return None
+    
+    # Update banner image for one game
+    def update_banner_image(self, game_id):
+        game = Game.objects.get(id=game_id)
+        content_file = self.get_banner_image(game_id, game.banner_link)
+        if content_file:
+            self.logger.debug(f"Saving banner image for {game.name}")
+            game.banner_image.delete()
+            game.banner_image = None
+            game.save()
+            game.banner_image.save(f"{game_id}.png", content_file)
+            game.save()
+        else:
+            self.logger.error(f"Error getting banner image for {game.name}")
+    
+    # Update average rating for a game
     def update_average_rating(self, game_id):
         # Get all ratings for the game, get average
         game_ratings = Rating.objects.filter(game_id=game_id)
@@ -115,9 +162,12 @@ class GameService():
             self.logger.debug(f"Updating average rating for {game.name} to None")
         game.save()
 
-    # Update popularity score for game
+    # Update popularity score for a game
     def update_popularity_score(self, game_id):
         game = Game.objects.get(id=game_id)
+        if not game.average_rating:
+            return
+
         people_rated = Rating.objects.filter(game_id=game_id, rating__gt=0).count()
         people_total = int(config("PEOPLE_CONSTANT"))
         new_popularity_score = round(min(1, (game.average_rating) * 0.12 * (people_rated / people_total)), 4)
@@ -129,9 +179,8 @@ class GameService():
             self.logger.debug(f"Keeping popularity score for {game.name} at {game.popularity_score}")
         game.save()
 
-
-    # Update banner images for all games
-    def update_banner_images(self) -> Tuple[int, int, int]:
+    # Update banner links for all games
+    def update_banner_links(self) -> Tuple[int, int, int]:
         kept = 0
         updated = 0
         exceptions = 0
@@ -154,6 +203,7 @@ class GameService():
                         self.logger.debug(f"Changing banner link for {game.name} from {game.banner_link} to {new_banner_link}")
                         game.banner_link = new_banner_link
                         game.save()
+                        self.update_banner_image(game.id)
                         updated += 1
                 else:
                     self.logger.debug(f"Keeping banner link for {game.name}")
@@ -188,6 +238,13 @@ class GameService():
                 kept += 1
 
         return kept, updated
+    
+    # Update banner images for all games
+    def update_banner_images(self):
+        games = Game.objects.all()
+        for game in games:
+            self.update_banner_image(game.id)
+            time.sleep(1)
 
     # Update average ratings for all games
     def update_average_ratings(self):
@@ -222,9 +279,10 @@ class GameService():
         return kept, changed
 
 # Get user from token used
-def get_user_from_auth_header(header: str) -> Union[DiscordUser, None]:
+def get_user_from_auth_header(request: requests.Request) -> Union[DiscordUser, None]:
     try:
-        token = header.split(' ')[1]
+        auth_header = request.headers['Authorization']
+        token = auth_header.split(' ')[1]
         token_object = AuthToken.objects.get(token=token)
         user_object = DiscordUser.objects.get(id=token_object.user_id)
         return user_object

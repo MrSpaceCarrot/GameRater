@@ -9,11 +9,14 @@ class Command(BaseCommand):
         logger = logging.getLogger("services")
         logger.info("Scheduling tasks")
 
-        schedule_celery_task("update_banner_images", "0,30")
+        schedule_celery_task("update_banner_links", "0,30")
         schedule_celery_task("update_last_updated", "15,45")
-        schedule_celery_task("update_average_ratings", "5")
-        schedule_celery_task("update_popularity_scores", "10")
-        schedule_celery_task("clear_expired_tokens", "35")
-        schedule_celery_task("sort_tags", "40")
+        
+        schedule_celery_task("update_popularity_scores", "5")
+        schedule_celery_task("update_average_ratings", "10")
+
+        schedule_celery_task("sort_tags", "35")
+        schedule_celery_task("clear_expired_tokens", "40")
+        
 
         logger.info(f"Finished scheduling tasks")
