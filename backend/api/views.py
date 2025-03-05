@@ -21,53 +21,53 @@ def games(request):
     serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
-# Get 6 most recently added games
+# Get 12 most recently added games
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def recentlyaddedgames(request):
-    games = Game.objects.all().order_by('-date_added')[:6]
+    games = Game.objects.all().order_by('-date_added')[:12]
     serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
-# Get 6 most recently updated games
+# Get 12 most recently updated games
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def recentlyupdatedgames(request):
-    games = Game.objects.filter(last_updated__isnull=False).order_by('-last_updated')[:6]
+    games = Game.objects.filter(last_updated__isnull=False).order_by('-last_updated')[:12]
     serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
-# Get 6 games which have not recieved updates the longest
+# Get 12 games which have not recieved updates the longest
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def deadgames(request):
-    games = Game.objects.filter(last_updated__isnull=False).order_by('last_updated')[:6]
+    games = Game.objects.filter(last_updated__isnull=False).order_by('last_updated')[:12]
     serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
-# Get 6 random games
+# Get 12 random games
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def randomgames(request):
-    games = Game.objects.all().order_by('?')[:6]
+    games = Game.objects.all().order_by('?')[:12]
     serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 
-# Get 6 highest rated games
+# Get 12 highest rated games
 @api_view(["GET"])
 @authentication_classes([DiscordTokenAuthentication])
 @permission_classes([IsAuthenticated])
 @ratelimit(key='ip', rate='60/m', block=True)
 def topgames(request):
-    games = Game.objects.all().order_by('-popularity_score')[:6]
+    games = Game.objects.all().order_by('-popularity_score')[:12]
     serializer = GameSerializer(games, many=True, context={'request': request})
     return Response(serializer.data)
 

@@ -59,7 +59,7 @@
 </script>
 
 <template>
-  <div class="pb-3 h-100">
+  <div class="h-100">
     <div class="gametilediv rounded h-100">
       <div>
         <a :href="link" target="_blank">

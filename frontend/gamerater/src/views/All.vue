@@ -318,6 +318,7 @@
         <div v-if="filteredGames" class="row justify-content-start gx-2">
           <div v-for="game in filteredGames" class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <GameTile   v-if="filteredSort==='Average Rating'"
+                        class="pb-3"
                         :name="game.name" 
                         :platform="game.platform" 
                         :install-size="game.install_size"
@@ -331,6 +332,7 @@
                         :average-rating="game.average_rating"
                 />
             <GameTile   v-else-if="filteredSort==='Date Added'"
+                        class="pb-3"
                         :name="game.name" 
                         :platform="game.platform" 
                         :install-size="game.install_size"
@@ -344,6 +346,7 @@
                         :popularity-score="game.popularity_score"
                 />
             <GameTile   v-else
+                        class="pb-3"
                         :name="game.name" 
                         :platform="game.platform" 
                         :install-size="game.install_size"
