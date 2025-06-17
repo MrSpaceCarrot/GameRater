@@ -4,84 +4,84 @@
 #
 #    pip-compile
 #
-amqp==5.3.1
+amqp
     # via
     #   -r requirements.in
     #   kombu
-argon2-cffi==25.1.0
+argon2-cffi
     # via
     #   -r requirements.in
     #   minio
-argon2-cffi-bindings==21.2.0
+argon2-cffi-bindings
     # via
     #   -r requirements.in
     #   argon2-cffi
-asgiref==3.8.1
+asgiref
     # via
     #   -r requirements.in
     #   django
     #   django-cors-headers
-async-timeout==5.0.1
+async-timeout
     # via
     #   -r requirements.in
     #   redis
-billiard==4.2.1
+billiard
     # via
     #   -r requirements.in
     #   celery
-boto3==1.38.37
+boto3
     # via -r requirements.in
-botocore==1.38.37
+botocore
     # via
     #   -r requirements.in
     #   boto3
     #   s3transfer
-celery==5.5.3
+celery
     # via
     #   -r requirements.in
     #   django-celery-beat
     #   django-celery-results
-certifi==2025.6.15
+certifi
     # via
     #   -r requirements.in
     #   minio
     #   requests
-cffi==1.17.1
+cffi
     # via
     #   -r requirements.in
     #   argon2-cffi-bindings
-charset-normalizer==3.4.2
+charset-normalizer
     # via
     #   -r requirements.in
     #   requests
-click==8.2.1
+click
     # via
     #   -r requirements.in
     #   celery
     #   click-didyoumean
     #   click-plugins
     #   click-repl
-click-didyoumean==0.3.1
+click-didyoumean
     # via
     #   -r requirements.in
     #   celery
-click-plugins==1.1.1
+click-plugins
     # via
     #   -r requirements.in
     #   celery
-click-repl==0.3.0
+click-repl
     # via
     #   -r requirements.in
     #   celery
-colorama==0.4.6
+colorama
     # via
     #   -r requirements.in
     #   click
-cron-descriptor==1.4.5
+cron-descriptor
     # via
     #   -r requirements.in
     #   django-celery-beat
-django==5.2.3
+django
     # via
     #   -r requirements.in
     #   django-celery-beat
@@ -91,131 +91,131 @@ django==5.2.3
     #   django-storages
     #   django-timezone-field
     #   djangorestframework
-django-celery-beat==2.8.1
+django-celery-beat
     # via -r requirements.in
-django-celery-results==2.6.0
+django-celery-results
     # via -r requirements.in
-django-cleanup==9.0.0
+django-cleanup
     # via -r requirements.in
-django-cors-headers==4.7.0
+django-cors-headers
     # via -r requirements.in
-django-minio-storage==0.5.8
+django-minio-storage
     # via -r requirements.in
-django-ratelimit==4.1.0
+django-ratelimit
     # via -r requirements.in
-django-storages==1.14.6
+django-storages
     # via -r requirements.in
-django-timezone-field==7.1
+django-timezone-field
     # via
     #   -r requirements.in
     #   django-celery-beat
-djangorestframework==3.16.0
+djangorestframework
     # via -r requirements.in
-greenlet==3.2.3
+greenlet
     # via
     #   -r requirements.in
     #   sqlalchemy
-gunicorn==23.0.0
+gunicorn
     # via -r requirements.in
-idna==3.10
+idna
     # via
     #   -r requirements.in
     #   requests
-jmespath==1.0.1
+jmespath
     # via
     #   -r requirements.in
     #   boto3
     #   botocore
-kombu==5.5.4
+kombu
     # via
     #   -r requirements.in
     #   celery
-minio==7.2.15
+minio
     # via
     #   -r requirements.in
     #   django-minio-storage
-mysql-connector-python==9.3.0
+mysql-connector-python
     # via -r requirements.in
-mysqlclient==2.2.7
+mysqlclient
     # via -r requirements.in
-packaging==25.0
+packaging
     # via
     #   -r requirements.in
     #   gunicorn
-    #   kombu
-pillow==11.2.1
+pillow
     # via -r requirements.in
-prompt-toolkit==3.0.51
+prompt-toolkit
     # via
     #   -r requirements.in
     #   click-repl
-pycparser==2.22
+pycparser
     # via
     #   -r requirements.in
     #   cffi
-pycryptodome==3.23.0
+pycryptodome
     # via
     #   -r requirements.in
     #   minio
-python-crontab==3.2.0
+python-crontab
     # via
     #   -r requirements.in
     #   django-celery-beat
-python-dateutil==2.9.0.post0
+python-dateutil
     # via
     #   -r requirements.in
     #   botocore
     #   celery
     #   python-crontab
-python-decouple==3.8
+python-decouple
     # via -r requirements.in
-redis==6.2.0
+redis
     # via -r requirements.in
-requests==2.32.4
+requests
     # via -r requirements.in
-s3transfer==0.13.0
+s3transfer
     # via
     #   -r requirements.in
     #   boto3
-six==1.17.0
+six
     # via
     #   -r requirements.in
     #   python-dateutil
-sqlalchemy==2.0.41
+sqlalchemy
     # via -r requirements.in
-sqlparse==0.5.3
+sqlparse
     # via
     #   -r requirements.in
     #   django
-typing-extensions==4.14.0
+typing-extensions
     # via
     #   -r requirements.in
     #   minio
     #   sqlalchemy
-tzdata==2025.2
+tzdata
     # via
     #   -r requirements.in
+    #   celery
     #   django
     #   django-celery-beat
     #   kombu
     #   tzlocal
-tzlocal==5.3.1
+tzlocal
     # via -r requirements.in
-urllib3==2.4.0
+urllib3
     # via
     #   -r requirements.in
     #   botocore
     #   minio
     #   requests
-vine==5.1.0
+vine
     # via
     #   -r requirements.in
     #   amqp
     #   celery
     #   kombu
-wcwidth==0.2.13
+wcwidth
     # via
     #   -r requirements.in
     #   prompt-toolkit
-whitenoise==6.9.0
+whitenoise
     # via -r requirements.in

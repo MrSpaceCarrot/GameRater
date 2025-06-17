@@ -31,6 +31,8 @@ class DiscordAuthBackend(BaseBackend):
         if not created:
             user.last_login = timezone.now()
             user.save()
+        user.avatar_link = avatar_link
+        user.save()
 
         # Create token for user
         token = AuthToken()
