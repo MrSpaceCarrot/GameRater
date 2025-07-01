@@ -142,6 +142,7 @@ packaging
     # via
     #   -r requirements.in
     #   gunicorn
+    #   kombu
 pillow
     # via -r requirements.in
 prompt-toolkit
@@ -194,7 +195,6 @@ typing-extensions
 tzdata
     # via
     #   -r requirements.in
-    #   celery
     #   django
     #   django-celery-beat
     #   kombu
