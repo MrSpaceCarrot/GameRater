@@ -24,7 +24,7 @@
     "vue-slider-component": "^4.1.0-beta.7"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.1.4",
+    "@vitejs/plugin-vue": "^6.0.0",
     "dotenv": "^16.4.7",
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^7.6.8"
